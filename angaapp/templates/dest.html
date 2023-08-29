@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for societe in societe %}
+    
+    
+<div class="col-md-4">
+    <div class="card">
+        
+        {% if societe.img %}
+    <img class="card-img-top" src="{{ societe.img.url }}" alt="Card image cap">
+{% else %}
+    <!-- Gérer le cas où le champ img est vide -->
+{% endif %}
+
+        <div class="card-body">
+            <h4 class="card-title mb-3">{{societe.nom}}</h4>
+            <a href="{% url 'reserve' societe.id %}" class="btn btn-outline-primary">Faire une reservation</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {% if request.user.is_superuser %}
+                <a href="{% url 'deleteso' societe.id %}" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="#" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
+            {% endif %}
+            <p class="card-text">
+            </p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
