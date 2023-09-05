@@ -323,7 +323,7 @@
                   aria-expanded="false"
                 >
                   <img
-                    src="../assets/images/users/1.jpg"
+                    src="{% static 'assets/images/users/1.jpg' %}"
                     alt="user"
                     class="rounded-circle"
                     width="31"
@@ -334,13 +334,7 @@
                   aria-labelledby="navbarDropdown"
                 >
                   <a class="dropdown-item" href="javascript:void(0)"
-                    ><i class="mdi mdi-account me-1 ms-1"></i> My Profile</a
-                  >
-                  <a class="dropdown-item" href="javascript:void(0)"
-                    ><i class="mdi mdi-wallet me-1 ms-1"></i> My Balance</a
-                  >
-                  <a class="dropdown-item" href="javascript:void(0)"
-                    ><i class="mdi mdi-email me-1 ms-1"></i> Inbox</a
+                    ><i class="mdi mdi-account me-1 ms-1"></i> {{ user.username }}</a
                   >
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="javascript:void(0)"
@@ -348,7 +342,7 @@
                     Setting</a
                   >
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="javascript:void(0)"
+                  <a class="dropdown-item" href="{% url 'deconnecte' %}"
                     ><i class="fa fa-power-off me-1 ms-1"></i> Logout</a
                   >
                   <div class="dropdown-divider"></div>
@@ -567,11 +561,11 @@
                 <title>ANGAFU Admin</title>
                 <!-- Favicon icon -->
                 <link
-                  rel="icon"
-                  type="image/png"
-                  sizes="16x16"
-                  href="../assets/images/favicon.png"
-                />
+                rel="icon"
+                type="image/png"
+                sizes="16x16"
+                href="{% static 'assets/images/angafu_square.png' %}"
+              />
                 <!-- Custom CSS -->
                 <link href="{% static 'dist/css/style.min.css' %}" rel="stylesheet" />
                 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -613,8 +607,8 @@
                       <div id="loginform">
                         <div class="text-center pt-3 pb-3">
                           <span class="db"
-                            ><img src="../assets/images/logo.png" alt="logo"
-                          /></span>
+                            ><img src="{% static 'assets/images/angafu_square.png' %}" alt="logo" style="max-width: 150px; max-height: 150px; border-radius: 20%;" />
+                          </span>
                         </div>
                         <!-- Form -->
                         <form
