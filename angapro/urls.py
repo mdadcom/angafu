@@ -43,6 +43,7 @@ urlpatterns = [
     path('affconfirme/<int:reservation_id>',affconfirme,name='affconfirme'),
     path('confirme/<int:reservation_id>',confirme,name='confirme'),
     path('affdest/',affdest,name='affdest'),
+    path('affdesti/',affdesti,name='affdesti'),
     path('affavalid<int:destination_id>/',aff_a_valid,name='affavalid'),
     path('affvalid/<int:reservation_id>',affvalid,name='affvalid'),
     path('rejeter/<int:reservation_id>/', rejeter, name='rejeter'),

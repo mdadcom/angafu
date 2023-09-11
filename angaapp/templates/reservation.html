@@ -1,14 +1,34 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 
 
+<style>
+  .custom-radio input[type="radio"] {
+      display: none; /* Masquer le bouton radio par défaut */
+  }
 
+  .custom-radio label {
+      cursor: pointer;
+  }
+
+  .custom-radio label img {
+      max-width: 80px;
+      max-height: 50px;
+      border-radius: 20%;
+      border: 1px solid #ccc; /* Ajouter une bordure pour un style de bouton */
+      padding: 2px; /* Ajouter un peu d'espace autour de l'image */
+  }
+
+  .custom-radio input[type="radio"]:checked + label img {
+      border: 1px solid #007bff; /* Changer le style de la bordure lorsque le bouton est sélectionné */
+  }
+</style>
 
   
     <div class="col-md-6">
       <div class="card">
-        <form method="post" action="{% url 'addreserve' societe.id %}" class="form-horizontal">
+        <form method="post" id="reservationform" action="{% url 'addreserve' societe.id %}" class="form-horizontal">
           {% csrf_token %}
           <div class="card-body">
             <h4 class="card-title">Reservation</h4>
@@ -102,21 +122,28 @@
               </div>
             </div>
             <div class="form-group row">
-              <label
-                for="num_trans"
-                class="col-sm-3 text-end control-label col-form-label"
-                >NUMERO DE TRANSFERE</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="text"
-                  name="num_trans"
-                  class="form-control"
-                  id="num_trans"
-                  placeholder="Numero de transfère"
-                />
+              <label class="col-sm-3 text-end control-label col-form-label">Mode de Paiement</label>
+              <div class="col-sm-9 custom-radio">
+                  
+                      <input class="form-check-input" type="radio" name="mode_paiement" value="orange_money" id="id_orange_money">
+                      <label class="form-check-label" for="id_orange_money">
+                          <img src="{% static 'assets/images/orange-money.jpg' %}" alt="Orange Money">
+                      </label>
+                  
+                      <input class="form-check-input" type="radio" name="mode_paiement" value="moov_money" id="id_moov_money">
+                      <label class="form-check-label" for="id_moov_money">
+                          <img src="{% static 'assets/images/moov.png' %}" alt="Moov Money">
+                      </label>
+                  
               </div>
+          </div>
+          <div class="form-group row">
+            <label for="num_trans" class="col-sm-3 text-end control-label col-form-label">NUMERO DE TRANSFERT</label>
+            <div class="col-sm-9">
+                <input type="text" name="num_trans" class="form-control" id="num_trans" placeholder="Numero de transfert" />
+                <div id="error_message" style="color: red;"></div>
             </div>
+        </div>
           <div class="border-top">
             <div class="card-body">
               <button type="Submit" class="btn btn-primary">
@@ -128,5 +155,48 @@
       </div>
     </div>
     
-{% endblock  %}
+
+    <script>
+      // Sélectionnez l'élément d'entrée
+      var numTransInput = document.getElementById('num_trans');
     
+      // Ajoutez un gestionnaire d'événements pour l'événement de modification (changement de contenu) de l'entrée
+      numTransInput.addEventListener('input', function() {
+          // Obtenez la valeur actuelle de l'entrée
+          var inputValue = numTransInput.value;
+    
+          // Vérifiez si la valeur ne commence pas déjà par '+226'
+          if (!inputValue.startsWith('+226')) {
+              // Si ce n'est pas le cas, ajoutez '+226' au début
+              numTransInput.value = '+226' + inputValue;
+          }
+      });
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('reservationform'); 
+    
+        form.addEventListener('submit', function(event) {
+            var modePaiement = document.querySelector('input[name="mode_paiement"]:checked').value;
+            var numTrans = document.getElementById('num_trans').value;
+    
+            var errorMessage = document.getElementById('error_message');
+    
+            // Réinitialiser le message d'erreur
+            errorMessage.textContent = '';
+    
+            if (modePaiement === 'orange_money') {
+                if (!numTrans.startsWith('+22676') && !numTrans.startsWith('+22677') && !numTrans.startsWith('+22675') && !numTrans.startsWith('+22674') && !numTrans.startsWith('+22666') && !numTrans.startsWith('+22667') && !numTrans.startsWith('+22665') && !numTrans.startsWith('+22664') && !numTrans.startsWith('+22606') && !numTrans.startsWith('+22607') && !numTrans.startsWith('+22605') && !numTrans.startsWith('+22604')) {
+                    errorMessage.textContent = "Votre mode de paiement ne correspond pas au numéro de transfert que vous avez donné.";
+                    event.preventDefault(); // Empêche la soumission du formulaire
+                }
+            } else if (modePaiement === 'moov_money') {
+                if (!numTrans.startsWith('+22670') && !numTrans.startsWith('+22671') && !numTrans.startsWith('+22672') && !numTrans.startsWith('+22673') && !numTrans.startsWith('+22660') && !numTrans.startsWith('+22661') && !numTrans.startsWith('+22662') && !numTrans.startsWith('+22663') && !numTrans.startsWith('+22601') && !numTrans.startsWith('+22602') && !numTrans.startsWith('+22603')) {
+                    errorMessage.textContent = "Votre mode de paiement ne correspond pas au numéro de transfert que vous avez donné.";
+                    event.preventDefault(); // Empêche la soumission du formulaire
+                }
+            }
+        });
+    });
+    </script>
+      
+{% endblock  %}

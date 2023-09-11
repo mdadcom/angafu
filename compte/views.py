@@ -3,8 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseForbidden
 from django.contrib import messages
+from angaapp.models import Destination
+from .models import *
 from django.contrib.auth.forms import UserCreationForm
-from .utils import is_admin, is_manager
 from .form import *
 
 def connecte (request):
@@ -12,9 +13,18 @@ def connecte (request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user=authenticate(request, username=username, password=password)
-        if user is not None:
+        if user is not None and user.is_superuser:
             login(request, user)
             return redirect('home')
+        if user is not None and user.is_vendeur:
+            login(request, user)
+            return redirect('home')
+        if user is not None and user.is_admin:
+            login(request, user)
+            return redirect('home')
+        elif user is not None and user.is_agent_de_liaison:
+            login(request, user)
+            return redirect('affdesti')
         else:
             messages.success(request,("Nom utilisateur incorrect ou Mot de passe incorrect"))
             return redirect('connecte')
@@ -27,31 +37,24 @@ def deconnecte(request):
     return redirect('home')
 
 def register_user(request):
+    msg = None
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.role = form.cleaned_data['role']
             user.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            messages.success(request, 'Utilisateur créé avec succès')
-            return redirect('home')
+
+            # Récupérer les destinations sélectionnées
+            destinations = form.cleaned_data.get('destinations')
+
+            # Si des destinations ont été sélectionnées, les associer à l'utilisateur
+            if destinations:
+                user.destinations.set(destinations)
+
+            msg = 'Utilisateur créé avec succès'
+            return redirect('connecte')
+        else:
+            msg = 'Utilisateur non valide'
     else:
         form = RegisterUserForm()
-    return render(request, 'register.html', {'form': form})
-
-@user_passes_test(is_admin)
-def admin_view(request):
-    # Votre code pour la vue admin
-    pass
-
-@user_passes_test(is_manager)
-def manager_view(request):
-    # Votre code pour la vue manager
-    pass
-
-def access_denied(request):
-    return HttpResponseForbidden("Accès refusé.")
+    return render(request, 'register.html', {'form': form, 'msg': msg})

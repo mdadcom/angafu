@@ -81,12 +81,27 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'angafu',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': '',
+        'OPTIONS': {
+            'init_command': 'SET foreign_key_checks = 0;',
+        },
+    }
+}
+""""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'angafu',
         'HOST': '207.180.223.199',
         'PORT': '',
         'USER': 'angafu',
         'PASSWORD': 'Angafu@2023',
     }
 }
+"""
 #DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.sqlite3',
@@ -144,4 +159,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL='/media/'
 
-#AUTH_USER_MODEL = 'compte.User'
+AUTH_USER_MODEL = 'compte.User'

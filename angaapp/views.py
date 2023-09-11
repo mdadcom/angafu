@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from django.contrib.auth.decorators import user_passes_test
+#from django.contrib.auth.decorators import user_passes_test
 from .models import*
 from .form import*
 from django.http import HttpResponse
@@ -16,10 +16,9 @@ def is_achat(user):
     return user.role == 'achat'
 
 
-#@user_passes_test(is_venter, is_achat)
 def home(request):
     return render(request, 'index.html',)
-#@user_passes_test(is_venter)
+
 def home2(request, ):
     destination=Destination.objects.all()
     return render(request, 'index2.html', {'destination':destination})
@@ -160,7 +159,7 @@ def confirme(request, reservation_id):
         reservation = Reservations.objects.get(id=reservation_id)
         
         # Vérifier si les conditions de num_trans et montant_paye sont remplies
-        if num_trans == reservation.num_trans and montant_paye in ['10000', '15000', '20000']:
+        if num_trans == reservation.num_trans and montant_paye in ['7000','7500','9000','8000','10000', '15000', '20000']:
             confirme_instance = Confirme.objects.create(num_trans=num_trans, trans_id=trans_id, montant_paye=montant_paye)
             reservation.confirm = True
             reservation.save()
@@ -175,6 +174,22 @@ def affdest(request):
         'destination':destination,
     }
     return render(request, 'affdest.html',context)
+
+
+def affdesti(request):
+    user_destination = request.user.destinations.first()
+
+    if user_destination:
+        
+        destination = Destination.objects.filter(nom=user_destination.nom)
+        context = {
+            'destination': destination,
+        }
+        return render(request, 'affdest.html', context)
+    else:
+        return HttpResponse("Vous n'avez pas de destination valide.")
+
+
 
 def aff_a_valid(request, destination_id):
     destination=get_object_or_404(Destination, id=destination_id)
@@ -233,7 +248,7 @@ def valide(request, confirme_id):
         
         
         account_sid = 'ACf039fa8809fc1dbe5f6a20ad139f8c20'
-        auth_token = '729b7cf16bac0a4d57338232093dadb1'
+        auth_token = '6f2cb6993b24417c12f7b6fbccde20cd'
         twilio_phone_number = '+14782493931'
         
         client = Client(account_sid, auth_token)
@@ -243,6 +258,7 @@ def valide(request, confirme_id):
         
         message = client.messages.create(
             to=confirme.num_trans,
+           
             from_=twilio_phone_number,
             body=message
         )

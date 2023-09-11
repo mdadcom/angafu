@@ -369,10 +369,12 @@
       <!-- ============================================================== -->
       <!-- Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
+      
       <aside class="left-sidebar" data-sidebarbg="skin5">
         <!-- Sidebar scroll-->
         <div class="scroll-sidebar">
           <!-- Sidebar navigation-->
+          {% if user.is_superuser or user.is_admin or user.is_vendeur %}
           <nav class="sidebar-nav">
             <ul id="sidebarnav" class="pt-4">
               <li class="sidebar-item">
@@ -473,7 +475,6 @@
                       ><span class="hide-menu">Reservations</span></a
                     >
                   </li>
-                 
                     
                   <li class="sidebar-item">
                     <a href="{% url 'affdest' %}" class="sidebar-link"
@@ -493,10 +494,12 @@
               </li>
             </ul>
           </nav>
+          {% endif %}
           <!-- End Sidebar navigation -->
         </div>
         <!-- End Sidebar scroll-->
       </aside>
+      
       <!-- ============================================================== -->
       <!-- End Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
@@ -564,9 +567,9 @@
                 <link
                 rel="icon"
                 type="image/png"
-                sizes="16x16"
+                sizes="16x16;border-radius: 20%; "
                 href="{% static 'assets/images/angafu_square.png' %}"
-                style="border-radius: 20%;"
+                style="border-radius: 50%;"
               />
                 <!-- Custom CSS -->
                 <link href="{% static 'dist/css/style.min.css' %}" rel="stylesheet" />

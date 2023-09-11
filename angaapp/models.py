@@ -25,6 +25,11 @@ class Societe(models.Model):
 class Heure_d(models.Model):
     time=models.TimeField()
 class Reservations(models.Model):
+    MODE_PAIEMENT_CHOICES = (
+        ('orange_money', 'Orange Money'),
+        ('moov_money', 'Moov Money'),
+    )
+    
     code_reservation = models.CharField(max_length=100, unique=True, editable=False)
     societe=models.ManyToManyField(Societe,)
     nom=models.CharField(max_length=80, blank=True)
@@ -33,6 +38,7 @@ class Reservations(models.Model):
     time=models.ForeignKey(Heure_d, on_delete=models.CASCADE)
     destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
     tel=models.CharField(max_length=80, blank=True)
+    mode_paiement = models.CharField(max_length=20, choices=MODE_PAIEMENT_CHOICES, blank=True)
     num_trans=models.CharField(max_length=80, blank=True)
     confirm = models.BooleanField(default=False)
     val = models.BooleanField(default=False)
