@@ -4,50 +4,52 @@
 <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title mb-0">Liste des Reservations Valide avec Success</h5>
+        <h5 class="card-title mb-0">Liste des Reservations Valides avec Success de la Semaine</h5>
       </div>
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Societe</th>
-            <th scope="col">NOM</th>
-            <th scope="col">PRENOM</th>
-            <th scope="col">DATE DEPART</th>
-            <th scope="col">HEURE</th>
-            <th scope="col">DESTINATION</th>
-            <th scope="col">NUMERO TELEPHONE</th>
-            <th scope="col">NUMERO TRANSFER</th>
-            <!-- Autres en-têtes de colonnes -->
-          </tr>
-        </thead>
-        <tbody>
-            {% for valid in valides %}
-          <tr>
-            <td scope="row">{{ valid.code_reservation }}</td>
-            <td>{% for societe in valid.societe.all %}
-                {{ societe.nom }}
-              {% endfor %}</td>
-            <td>{{ valid.nom }}</td>
-            <td>{{ valid.prenom }}</td>
-            <td>{{valid.date}}</td>
-            <td>{{valid.time.time|time:"H:i"}}</td>
-            <td>{{valid.destination}}</td>
-            <td>{{valid.tel}}</td>
-            <td>{{valid.num_trans}}</td>
-            <td>
-              {% if valid.val %}
-                  <i class="fas fa-check-circle text-success"></i>
-              {% else %}
-                  <i class="far fa-check-circle"></i>
-              {% endif %}
-          </td>
-          </tr>
-            {% endfor %}
-        </tbody>
-      </table>
+      
     </div>
+
+    <!-- Affichage des réservations par période -->
+    {% for periode in reservations_par_periode %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Période : {{ periode.debut_periode|date:"d/m/Y" }} - {{ periode.fin_periode|date:"d/m/Y" }}</h5>
+                <p>Total des réservations : {{ periode.total }}</p>
+                <p>Montant total : {{ periode.montant_total|default:"0000" }}F.cfa</p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Societe</th>
+                            <th scope="col">NOM</th>
+                            <th scope="col">PRENOM</th>
+                            <th scope="col">DATE DEPART</th>
+                            <th scope="col">HEURE</th>
+                            <th scope="col">DESTINATION</th>
+                            <th scope="col">NUMERO TELEPHONE</th>
+                            <th scope="col">NUMERO TRANSFER</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in periode.reservations %}
+                            <tr>
+                                <td scope="row">{{ reservation.code_reservation }}</td>
+                                <td>{% for societe in reservation.societe.all %}
+                                    {{ societe.nom }}
+                                  {% endfor %}</td>
+                                <td>{{ reservation.nom }}</td>
+                                <td>{{ reservation.prenom }}</td>
+                                <td>{{ reservation.date }}</td>
+                                <td>{{ reservation.time.time|time:"H:i" }}</td>
+                                <td>{{ reservation.destination }}</td>
+                                <td>{{ reservation.tel }}</td>
+                                <td>{{ reservation.num_trans }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
 </div>
-</div>    
-{% endblock  %}
-    
+{% endblock %}

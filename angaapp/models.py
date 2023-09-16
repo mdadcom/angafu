@@ -16,7 +16,8 @@ class Destination(models.Model):
 class Societe(models.Model):
     destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
     nom=models.CharField(max_length=80, blank=True)
-    img = models.ImageField(upload_to='societe_images/')
+    img = models.FileField(upload_to='societe_images/')
+
     create_date=models.DateField(auto_now_add=True)
     class Meta:
         verbose_name_plural=('Societe')
@@ -80,3 +81,12 @@ class Valide(models.Model):
     numchaise = models.CharField(max_length=80, null=True, blank=True)
     def __str__(self):
         return self.numticket
+    
+from django.db import models
+
+class SMS(models.Model):
+    contenu = models.TextField()
+    date_reception = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"SMS reçu le {self.date_reception}"

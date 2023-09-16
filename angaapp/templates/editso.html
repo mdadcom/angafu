@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="col-md-6">
+      <div class="card">
+        <form method="post" action="{% url 'updateso' societe.id %}" class="form-horizontal" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="card-body">
+            <h4 class="card-title">Modifier Societe</h4>
+            <div class="form-group row">
+              <label
+                for="nom"
+                class="col-sm-3 text-end control-label col-form-label"
+                >DESTINATION</label>
+              <div class="col-sm-9">
+                {% render_field form.destination class="form-control" %}
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                for="lname"
+                class="col-sm-3 text-end control-label col-form-label"
+                >NOM</label
+              >
+              <div class="col-sm-9">
+                {% render_field form.nom class="form-control" %}
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                for="date"
+                class="col-sm-3 text-end control-label col-form-label"
+                >Logo</label
+              >
+              <div class="col-sm-9">
+                {% render_field form.img class="form-control" %}
+              </div>
+            </div>
+          <div class="border-top">
+            <div class="card-body">
+              <button type="Submit" class="btn btn-primary">
+                Modifier
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+{% endblock  %}

@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 #from django.contrib.auth.decorators import user_passes_test
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from .models import*
 from .form import*
 from django.http import HttpResponse
@@ -7,6 +9,11 @@ from rest_framework import generics
 from .serializers import *
 from twilio.rest import Client
 from django.db.models import Q
+from django.db.models import Count
+from datetime import timedelta
+from django.utils import timezone
+from django.db.models import Sum
+from django.http import HttpResponse
 import requests
 
 def is_venter(user):
@@ -22,10 +29,52 @@ def home(request):
 def home2(request, ):
     destination=Destination.objects.all()
     return render(request, 'index2.html', {'destination':destination})
+def affso(request):
+    
+    
+    form = SocieteForm(request.POST,request.FILES)
+
+    
+    return render(request, 'affso.html',{'form':form,})
+def addso(request):
+    
+    if request.method == "POST":
+        form = SocieteForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('affso')
+        else:
+            print(form.errors)  # Affiche les erreurs dans la console
+    else:
+        form = SocieteForm()
+
+    return render(request, 'affso.html', {'form': form})
+
+
+"""
+def addso(request):
+    if request.method=="POST":
+        form=SocieteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            
+        return redirect('home')
+    else:
+       form=SocieteForm()
+        
+       return redirect('home')
+"""
 def dest(request, destination_id):
     destination=get_object_or_404(Destination, id=destination_id)
     societe=destination.societe_set.all()
+    #societe =get_object_or_404(Societe, id=societe_id)
+    
+    time=Heure_d.objects.all()
+    destination=Destination.objects.all()
     context={
+        
+        'societe':societe,
+        'time':time,
         'destination':destination,
         'societe':societe
     }
@@ -62,29 +111,52 @@ def reserve(request, societe_id):
         'time':time,
         'destination':destination,
     }
-    return render(request, 'reservation.html', context)
+    return render(request, 'reserva.html', context)
+
 def deleteso(request, societe_id):
     societe=Societe.objects.get(id=societe_id)
     societe.delete()
     return redirect('home')
+def affeditso(request, societe_id):
+    societe=Societe.objects.get(id=societe_id)
+    form=SocieteForm(request.POST or None, instance=societe)
+   
+    
+    return render(request, 'editso.html',{'form':form,'societe':societe,})
 
+def updateso(request, societe_id):
+    societe=Societe.objects.get(id=societe_id)
+    form=SocieteForm(request.POST, request.FILES,instance=societe)
+    if form.is_valid():
+        form.save()
+    return redirect('home')
 def deletere(request, reservation_id):
     reserve=Reservations.objects.get(id=reservation_id)
     reserve.delete()
     return redirect('home')
 def affeditre(request, reservation_id):
-    form=ReservationsForm()
-    time=Heure_d.objects.all()
-    destination=Destination.objects.all()
-    reservation= Reservations.objects.get(id=reservation_id)
-    return render(request, 'editre.html',{'form':form,'reservation':reservation,'time':time,'destination':destination})
-
+    # Obtenir la réservation à modifier
+    reservation = Reservations.objects.get(id=reservation_id)
+    
+    if request.method == "POST":
+        # Si la demande est POST, cela signifie que le formulaire a été soumis, nous traitons la modification
+        form = ReservationsForm(request.POST, instance=reservation)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        # Si la demande est GET, cela signifie que nous affichons le formulaire de modification
+        form = ReservationsForm(instance=reservation)
+    
+    return render(request, 'editre.html', {'form': form, 'reservation': reservation})
+"""
 def updatere(request, reservation_id):
     reservation= Reservations.objects.get(id=reservation_id)
-    form=ReservationsForm(request.POST or None, instance=reservation)
+    form=ReservationsForm(request.POST, instance=reservation)
     if form.is_valid():
         form.save()
     return redirect('home')
+"""
 def addreserve(request, societe_id):
     societe = Societe.objects.get(id=societe_id)
     time=Heure_d.objects.all()
@@ -248,7 +320,7 @@ def valide(request, confirme_id):
         
         
         account_sid = 'ACf039fa8809fc1dbe5f6a20ad139f8c20'
-        auth_token = '6f2cb6993b24417c12f7b6fbccde20cd'
+        auth_token = '700ded712068492d7e33b187870ccc9a'
         twilio_phone_number = '+14782493931'
         
         client = Client(account_sid, auth_token)
@@ -369,10 +441,53 @@ def destination(request, destination_id):
         
     except Reservations.DoesNotExist:
         return render(request, 'hu.html', {'reservations': []})
-    
+
+
 def success(request):
+    # Récupérer toutes les réservations validées
     valides = Reservations.objects.filter(val=True)
-    return render(request, 'success.html',{'valides': valides})
+    
+    # Récupérer le nombre total de réservations validées
+    total_reservations = valides.count()
+
+    # Initialiser la liste pour stocker les réservations par période de 24 heures
+    reservations_par_periode = []
+
+    # Récupérer la date et l'heure actuelles
+    now = timezone.now()
+
+    # Parcourir les 7 derniers jours (vous pouvez ajuster la plage selon vos besoins)
+    for i in range(7):
+        debut_periode = now - timedelta(days=i+1)
+        fin_periode = now - timedelta(days=i)
+
+        # Filtrer les réservations validées pour cette période de 24 heures
+        reservations_periode = valides.filter(date__range=(debut_periode, fin_periode))
+        montant_periode = Confirme.objects.filter(reservation__in=reservations_periode, 
+                                                  date_paiement__range=(debut_periode, fin_periode)).aggregate(total=Sum('montant_paye'))['total']
+        # Ajouter les réservations et le nombre total à la liste
+        reservations_par_periode.append({
+            'debut_periode': debut_periode,
+            'fin_periode': fin_periode,
+            'reservations': reservations_periode,
+            'total': reservations_periode.count(),
+            'montant_total': montant_periode,
+        })
+
+    return render(request, 'success.html', {
+        'valides': valides,
+        
+        'reservations_par_periode': reservations_par_periode,
+        'total_reservations': total_reservations
+    })
+
+
+  
+def successp(request):
+    montant_total = Confirme.objects.filter(reservation__val=True).aggregate(total=Sum('montant_paye'))['total']
+    valides = Reservations.objects.filter(val=True)
+    valides_total = Reservations.objects.filter(val=True).values('date').annotate(total=Count('date'))
+    return render(request, 'successp.html',{'valides': valides,'valides_total': valides_total,'montant_total':montant_total,})
 
 
 #def register_user(request):
@@ -398,3 +513,21 @@ def success(request):
      #   form = UserCreationForm()
     
 #    return render(request, 'register_superuser.html', {'form': form})
+
+
+def mon_vue(request):
+    adresse_serveur = request.get_host()
+    return HttpResponse(f"L'adresse de votre serveur est : {adresse_serveur}")
+
+
+@csrf_exempt
+def recevoirsms(request):
+    if request.method == 'POST':
+        corps_sms = request.POST.get('corps_sms', '')
+        
+        SMS.objects.create(contenu=corps_sms)
+        
+        return JsonResponse({'message': 'SMS enregistré avec succès'}, status=200)
+
+    return JsonResponse({'message': 'Requête non autorisée'}, status=400)
+

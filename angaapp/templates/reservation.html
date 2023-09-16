@@ -13,8 +13,8 @@
   }
 
   .custom-radio label img {
-      max-width: 80px;
-      max-height: 50px;
+      max-width: 6rem;
+      max-height: 3rem;
       border-radius: 20%;
       border: 1px solid #ccc; /* Ajouter une bordure pour un style de bouton */
       padding: 2px; /* Ajouter un peu d'espace autour de l'image */
@@ -185,12 +185,12 @@
             errorMessage.textContent = '';
     
             if (modePaiement === 'orange_money') {
-                if (!numTrans.startsWith('+22676') && !numTrans.startsWith('+22677') && !numTrans.startsWith('+22675') && !numTrans.startsWith('+22674') && !numTrans.startsWith('+22666') && !numTrans.startsWith('+22667') && !numTrans.startsWith('+22665') && !numTrans.startsWith('+22664') && !numTrans.startsWith('+22606') && !numTrans.startsWith('+22607') && !numTrans.startsWith('+22605') && !numTrans.startsWith('+22604')) {
+                if (!numTrans.startsWith('+22676') && !numTrans.startsWith('+22677') && !numTrans.startsWith('+22675') && !numTrans.startsWith('+22674') && !numTrans.startsWith('+22666') && !numTrans.startsWith('+22667') && !numTrans.startsWith('+22665') && !numTrans.startsWith('+22664') && !numTrans.startsWith('+22606') && !numTrans.startsWith('+22607') && !numTrans.startsWith('+22605') && !numTrans.startsWith('+22604') && !numTrans.startsWith('+22654') && !numTrans.startsWith('+22655') && !numTrans.startsWith('+22656') && !numTrans.startsWith('+22657')) {
                     errorMessage.textContent = "Votre mode de paiement ne correspond pas au numéro de transfert que vous avez donné.";
                     event.preventDefault(); // Empêche la soumission du formulaire
                 }
             } else if (modePaiement === 'moov_money') {
-                if (!numTrans.startsWith('+22670') && !numTrans.startsWith('+22671') && !numTrans.startsWith('+22672') && !numTrans.startsWith('+22673') && !numTrans.startsWith('+22660') && !numTrans.startsWith('+22661') && !numTrans.startsWith('+22662') && !numTrans.startsWith('+22663') && !numTrans.startsWith('+22601') && !numTrans.startsWith('+22602') && !numTrans.startsWith('+22603')) {
+                if (!numTrans.startsWith('+22670') && !numTrans.startsWith('+22671') && !numTrans.startsWith('+22672') && !numTrans.startsWith('+22673') && !numTrans.startsWith('+22660') && !numTrans.startsWith('+22661') && !numTrans.startsWith('+22662') && !numTrans.startsWith('+22663') && !numTrans.startsWith('+22601') && !numTrans.startsWith('+22602') && !numTrans.startsWith('+22603') && !numTrans.startsWith('+22600') && !numTrans.startsWith('+22653') && !numTrans.startsWith('+22652') && !numTrans.startsWith('+22651') && !numTrans.startsWith('+22650')) {
                     errorMessage.textContent = "Votre mode de paiement ne correspond pas au numéro de transfert que vous avez donné.";
                     event.preventDefault(); // Empêche la soumission du formulaire
                 }
@@ -198,5 +198,5 @@
         });
     });
     </script>
-      
+  
 {% endblock  %}

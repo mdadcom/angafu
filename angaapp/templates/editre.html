@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
-
+{% load widget_tweaks %}
 {% block content %}
 <div class="col-md-6">
       <div class="card">
-        <form method="post" action="{% url 'updatere' reservation.id %}" class="form-horizontal">
+        <form method="post" action="{% url 'affeditre' reservation.id %}" class="form-horizontal">
           {% csrf_token %}
           <div class="card-body">
             <h4 class="card-title">Reservation</h4>
@@ -13,13 +13,7 @@
                 class="col-sm-3 text-end control-label col-form-label"
                 >NOM</label>
               <div class="col-sm-9">
-                <input
-                  type="text"
-                  name="nom"
-                  class="form-control"
-                  id="nom"
-                  placeholder="Nom"
-                />
+                {% render_field form.nom class="form-control" %}
               </div>
             </div>
             <div class="form-group row">
@@ -29,13 +23,7 @@
                 >PRENOM</label
               >
               <div class="col-sm-9">
-                <input
-                  type="text"
-                  name="prenom"
-                  class="form-control"
-                  id="prenom"
-                  placeholder="Prenom"
-                />
+                {% render_field form.prenom class="form-control" %}
               </div>
             </div>
             <div class="form-group row">
@@ -45,13 +33,7 @@
                 >DATE DE DEPART</label
               >
               <div class="col-sm-9">
-                <input
-                  type="date"
-                  name="date"
-                  class="form-control"
-                  id="date"
-                  placeholder="Prenom"
-                />
+                {% render_field form.date class="form-control" %}
               </div>
             </div>
             <div class="form-group row">
@@ -60,10 +42,9 @@
             for="time"
             >HEURE DE DEPART</label>
             <div class="col-sm-9">
-                    <select name="time" class="form-control" required>
-                      {% for time in time %}
-                        <option value="{{time.id}}">{{time.time|time:"H:i" }}</option>
-                        {% endfor %}
+                   
+                      {% render_field form.time class="form-control" %}
+                      
                     </select>
                 </div>
             </div> 
@@ -73,10 +54,9 @@
               for="destination"
               >DESTINATION</label>
               <div class="col-sm-9">
-                      <select name="destination" class="form-control" required>
-                        {% for destination in destination %}
-                          <option value="{{destination.id}}">{{destination.nom }}</option>
-                          {% endfor %}
+                      
+                        {% render_field form.destination class="form-control" %}
+                         
                       </select>
                   </div>
               </div> 
@@ -87,13 +67,7 @@
                 >NUMERO TELEPHONE</label
               >
               <div class="col-sm-9">
-                <input
-                  type="text"
-                  name="tel"
-                  class="form-control"
-                  id="tel"
-                  placeholder="Numero de Téléphone"
-                />
+                {% render_field form.tel class="form-control" %}
               </div>
             </div>
             <div class="form-group row">
@@ -103,13 +77,7 @@
                 >NUMERO DE TRANSFERE</label
               >
               <div class="col-sm-9">
-                <input
-                  type="text"
-                  name="num_trans"
-                  class="form-control"
-                  id="num_trans"
-                  placeholder="Numero de transfère"
-                />
+                {% render_field form.num_trans class="form-control" %}
               </div>
             </div>
           <div class="border-top">

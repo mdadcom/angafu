@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<style>
+  .custom-radio input[type="radio"] {
+      display: none; /* Masquer le bouton radio par défaut */
+  }
+
+  .custom-radio label {
+      cursor: pointer;
+  }
+
+  .custom-radio label img {
+      max-width: 6rem;
+      max-height: 3rem;
+      border-radius: 20%;
+      border: 1px solid #ccc; /* Ajouter une bordure pour un style de bouton */
+      padding: 2px; /* Ajouter un peu d'espace autour de l'image */
+  }
+
+  .custom-radio input[type="radio"]:checked + label img {
+      border: 1px solid #007bff; /* Changer le style de la bordure lorsque le bouton est sélectionné */
+  }
+</style>
+
+  <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Launch demo modal
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form method="post" id="reservationform" action="{% url 'addreserve' societe.id %}" class="form-horizontal">
+                {% csrf_token %}
+                <div class="card-body">
+                  <h4 class="card-title">Reservation</h4>
+                  <div class="form-group row">
+                    <label
+                      for="nom"
+                      class="col-sm-3 text-end control-label col-form-label"
+                      >NOM</label>
+                    <div class="col-sm-9">
+                      <input
+                        type="text"
+                        name="nom"
+                        class="form-control"
+                        id="nom"
+                        placeholder="Nom"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label
+                      for="lname"
+                      class="col-sm-3 text-end control-label col-form-label"
+                      >PRENOM</label
+                    >
+                    <div class="col-sm-9">
+                      <input
+                        type="text"
+                        name="prenom"
+                        class="form-control"
+                        id="prenom"
+                        placeholder="Prenom"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label
+                      for="date"
+                      class="col-sm-3 text-end control-label col-form-label"
+                      >DATE DE DEPART</label
+                    >
+                    <div class="col-sm-9">
+                      <input
+                        type="date"
+                        name="date"
+                        class="form-control"
+                        id="date"
+                        placeholder="Prenom"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                  <label 
+                  class="col-sm-3 text-end control-label col-form-label" 
+                  for="time"
+                  >HEURE DE DEPART</label>
+                  <div class="col-sm-9">
+                          <select name="time" class="form-control" required>
+                            {% for time in time %}
+                              <option value="{{time.id}}">{{time.time|time:"H:i" }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                  </div> 
+                  <div class="form-group row">
+                    <label 
+                    class="col-sm-3 text-end control-label col-form-label" 
+                    for="destination"
+                    >DESTINATION</label>
+                    <div class="col-sm-9">
+                            <select name="destination" class="form-control" required>
+                              {% for destination in destination %}
+                                <option value="{{destination.id}}">{{destination.nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div> 
+                  <div class="form-group row">
+                    <label
+                      for="tel"
+                      class="col-sm-3 text-end control-label col-form-label"
+                      >NUMERO TELEPHONE</label
+                    >
+                    <div class="col-sm-9">
+                      <input
+                        type="text"
+                        name="tel"
+                        class="form-control"
+                        id="tel"
+                        placeholder="Numero de Téléphone"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 text-end control-label col-form-label">Mode de Paiement</label>
+                    <div class="col-sm-9 custom-radio">
+                        
+                            <input class="form-check-input" type="radio" name="mode_paiement" value="orange_money" id="id_orange_money">
+                            <label class="form-check-label" for="id_orange_money">
+                                <img src="{% static 'assets/images/orange-money.jpg' %}" alt="Orange Money">
+                            </label>
+                        
+                            <input class="form-check-input" type="radio" name="mode_paiement" value="moov_money" id="id_moov_money">
+                            <label class="form-check-label" for="id_moov_money">
+                                <img src="{% static 'assets/images/moov.png' %}" alt="Moov Money">
+                            </label>
+                        
+                    </div>
+                </div>
+                <div class="form-group row">
+                  <label for="num_trans" class="col-sm-3 text-end control-label col-form-label">NUMERO DE TRANSFERT</label>
+                  <div class="col-sm-9">
+                      <input type="text" name="num_trans" class="form-control" id="num_trans" placeholder="Numero de transfert" />
+                      <div id="error_message" style="color: red;"></div>
+                  </div>
+              </div>
+                <div class="border-top">
+                  <div class="card-body">
+                    <button type="Submit" class="btn btn-primary">
+                      RESERVER
+                    </button>
+                  </div>
+                </div>
+              </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="col-md-6">
+      <div class="card">
+        
+      </div>
+    </div>
+    
+
+    <script>
+      // Sélectionnez l'élément d'entrée
+      var numTransInput = document.getElementById('num_trans');
+    
+      // Ajoutez un gestionnaire d'événements pour l'événement de modification (changement de contenu) de l'entrée
+      numTransInput.addEventListener('input', function() {
+          // Obtenez la valeur actuelle de l'entrée
+          var inputValue = numTransInput.value;
+    
+          // Vérifiez si la valeur ne commence pas déjà par '+226'
+          if (!inputValue.startsWith('+226')) {
+              // Si ce n'est pas le cas, ajoutez '+226' au début
+              numTransInput.value = '+226' + inputValue;
+          }
+      });
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('reservationform'); 
+    
+        form.addEventListener('submit', function(event) {
+            var modePaiement = document.querySelector('input[name="mode_paiement"]:checked').value;
+            var numTrans = document.getElementById('num_trans').value;
+    
+            var errorMessage = document.getElementById('error_message');
+    
+            // Réinitialiser le message d'erreur
+            errorMessage.textContent = '';
+    
+            if (modePaiement === 'orange_money') {
+                if (!numTrans.startsWith('+22676') && !numTrans.startsWith('+22677') && !numTrans.startsWith('+22675') && !numTrans.startsWith('+22674') && !numTrans.startsWith('+22666') && !numTrans.startsWith('+22667') && !numTrans.startsWith('+22665') && !numTrans.startsWith('+22664') && !numTrans.startsWith('+22606') && !numTrans.startsWith('+22607') && !numTrans.startsWith('+22605') && !numTrans.startsWith('+22604') && !numTrans.startsWith('+22654') && !numTrans.startsWith('+22655') && !numTrans.startsWith('+22656') && !numTrans.startsWith('+22657')) {
+                    errorMessage.textContent = "Votre mode de paiement ne correspond pas au numéro de transfert que vous avez donné.";
+                    event.preventDefault(); // Empêche la soumission du formulaire
+                }
+            } else if (modePaiement === 'moov_money') {
+                if (!numTrans.startsWith('+22670') && !numTrans.startsWith('+22671') && !numTrans.startsWith('+22672') && !numTrans.startsWith('+22673') && !numTrans.startsWith('+22660') && !numTrans.startsWith('+22661') && !numTrans.startsWith('+22662') && !numTrans.startsWith('+22663') && !numTrans.startsWith('+22601') && !numTrans.startsWith('+22602') && !numTrans.startsWith('+22603') && !numTrans.startsWith('+22600') && !numTrans.startsWith('+22653') && !numTrans.startsWith('+22652') && !numTrans.startsWith('+22651') && !numTrans.startsWith('+22650')) {
+                    errorMessage.textContent = "Votre mode de paiement ne correspond pas au numéro de transfert que vous avez donné.";
+                    event.preventDefault(); // Empêche la soumission du formulaire
+                }
+            }
+        });
+    });
+    </script>
+  
+{% endblock  %}

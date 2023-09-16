@@ -1,6 +1,3 @@
-{% extends 'base.html' %}
-{% block content %}
-{% load static %}
 <style>
     .custom-radio input[type="radio"] {
         display: none;
@@ -21,26 +18,13 @@
     .custom-radio input[type="radio"]:checked + label img {
         border: 1px solid #007bff;
     }
-
-    .el-element-overlay {
-    display: flex;
-    flex-wrap: wrap;
-    }
-
-    .col-md-3 {
-        flex: 0 1 28.33%; /* Chaque carte occupe un tiers de la largeur */
-        max-width: 28.33%; /* Chaque carte occupe un tiers de la largeur */
-        padding: 10px; /* Espace entre les cartes */
-        box-sizing: border-box;
-    }
-    
 </style>
- {% for societe in societe %}
 
+<div class="container-fluid">
     <div class="row el-element-overlay">
-       
+        {% for societe in societe %}
             <div class="col-md-3">
-                <div class="card"> 
+                <div class="card">
                     <div class="el-card-item">
                         <div class="el-card-avatar el-overlay-1">
                             {% if societe.img %}
@@ -75,7 +59,8 @@
                                     </button>
                                 </div>
                                 <!-- Modal -->
-                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">                                    <div class="modal-dialog  modal-lg">
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog  modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                             <h1 class="modal-title fs-5" id="exampleModalLabel">RESERVATION</h1>
@@ -209,60 +194,12 @@
                                             </div>
                                         </div>
                                         </div>
-                                    </div>
-                                </span>
-                            </div>
+                                </div>
+                            </span>
                         </div>
                     </div>
                 </div>
-            
-        </div>
-   
-    {% endfor %}
-    
-    
-    
-    
-<script>
-// Sélectionnez l'élément d'entrée
-var numTransInput = document.getElementById('num_trans');
-
-// Ajoutez un gestionnaire d'événements pour l'événement de modification (changement de contenu) de l'entrée
-numTransInput.addEventListener('input', function() {
-    // Obtenez la valeur actuelle de l'entrée
-    var inputValue = numTransInput.value;
-
-    // Vérifiez si la valeur ne commence pas déjà par '+226'
-    if (!inputValue.startsWith('+226')) {
-        // Si ce n'est pas le cas, ajoutez '+226' au début
-        numTransInput.value = '+226' + inputValue;
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    var form = document.getElementById('reservationform'); 
-
-    form.addEventListener('submit', function(event) {
-        var modePaiement = document.querySelector('input[name="mode_paiement"]:checked').value;
-        var numTrans = document.getElementById('num_trans').value;
-
-        var errorMessage = document.getElementById('error_message');
-
-        // Réinitialiser le message d'erreur
-        errorMessage.textContent = '';
-
-        if (modePaiement === 'orange_money') {
-            if (!numTrans.startsWith('+22676') && !numTrans.startsWith('+22677') && !numTrans.startsWith('+22675') && !numTrans.startsWith('+22674') && !numTrans.startsWith('+22666') && !numTrans.startsWith('+22667') && !numTrans.startsWith('+22665') && !numTrans.startsWith('+22664') && !numTrans.startsWith('+22606') && !numTrans.startsWith('+22607') && !numTrans.startsWith('+22605') && !numTrans.startsWith('+22604') && !numTrans.startsWith('+22654') && !numTrans.startsWith('+22655') && !numTrans.startsWith('+22656') && !numTrans.startsWith('+22657')) {
-                errorMessage.textContent = "Votre mode de paiement ne correspond pas au numéro de transfert que vous avez donné.";
-                event.preventDefault(); // Empêche la soumission du formulaire
-            }
-        } else if (modePaiement === 'moov_money') {
-            if (!numTrans.startsWith('+22670') && !numTrans.startsWith('+22671') && !numTrans.startsWith('+22672') && !numTrans.startsWith('+22673') && !numTrans.startsWith('+22660') && !numTrans.startsWith('+22661') && !numTrans.startsWith('+22662') && !numTrans.startsWith('+22663') && !numTrans.startsWith('+22601') && !numTrans.startsWith('+22602') && !numTrans.startsWith('+22603') && !numTrans.startsWith('+22600') && !numTrans.startsWith('+22653') && !numTrans.startsWith('+22652') && !numTrans.startsWith('+22651') && !numTrans.startsWith('+22650')) {
-                errorMessage.textContent = "Votre mode de paiement ne correspond pas au numéro de transfert que vous avez donné.";
-                event.preventDefault(); // Empêche la soumission du formulaire
-            }
-        }
-    });
-});
-</script>
-{% endblock %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
