@@ -45,7 +45,7 @@
               </tr>
             {% endfor %}
             <tr>
-                <td colspan="9">Montant total payé : {{ montant_total }}F.cfa</td>
+                <td colspan="9">Montant total payé : {{ montant_total|default:"0000" }}F.cfa</td>
             </tr>
         </tbody>
       </table>
