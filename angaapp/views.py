@@ -27,7 +27,7 @@ def home(request):
     return render(request, 'index.html',)
 
 def home2(request, ):
-    destination=Destination.objects.all()
+    destination=Destination.objects.filter(nom__in=['Bobo-Dioulasso', 'Ouagadougou'])
     return render(request, 'index2.html', {'destination':destination})
 def affso(request):
     
@@ -88,6 +88,11 @@ def adddestination(request):
         nom=request.POST.get('nom')
         Destination.objects.create(nom=nom)
     return redirect('affdestination')
+def addheure(request):
+    if request.method == 'POST':
+        time=request.POST.get('time')
+        Heure_d.objects.create(time=time)
+    return redirect('affdestination')
 def affsociete(request):
     destination = Destination.objects.all()
     return render(request, 'affsociete.html',{'destination':destination})
@@ -102,16 +107,16 @@ def addsociete(request):
 def reserve(request, societe_id):
     
     societe =get_object_or_404(Societe, id=societe_id)
-    
+    societe_destination_id = societe.destination.id
     time=Heure_d.objects.all()
-    destination=Destination.objects.all()
+    destination=Destination.objects.exclude(id=societe_destination_id)
     context={
         
         'societe':societe,
         'time':time,
         'destination':destination,
     }
-    return render(request, 'reserva.html', context)
+    return render(request, 'reservation.html', context)
 
 def deleteso(request, societe_id):
     societe=Societe.objects.get(id=societe_id)

@@ -32,4 +32,36 @@
         </form>
     </div>
 </div>
+
+<div class="col-md-6">
+  <div class="card">
+    <form method="post" action="{% url 'addheure'%}" class="form-horizontal">
+      {% csrf_token %}
+      <div class="card-body">
+        <h4 class="card-title">HEURE de Depart</h4>
+        <div class="form-group row">
+          <label
+            for="nom"
+            class="col-sm-3 text-end control-label col-form-label"
+            >NOM</label>
+          <div class="col-sm-9">
+            <input
+              type="time"
+              name="time"
+              class="form-control"
+              id="nom"
+              placeholder="Nom"
+            />
+          </div>
+        </div>
+        <div class="border-top">
+          <div class="card-body">
+            <button type="Submit" class="btn btn-primary">
+              Ajouter
+            </button>
+          </div>
+        </div>
+      </form>
+  </div>
+</div>
 {% endblock  %}

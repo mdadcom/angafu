@@ -26,6 +26,7 @@ urlpatterns = [
     path('home2/', home2, name='home2'),
     path('affdestination/', affdestination, name='affdestination'),
     path('adddestination/', adddestination, name='adddestination'),
+    path('addheure/', addheure, name='addheure'),
     path('affso/>', affso, name='affso'),
     path('addso/>', addso, name='addso'),
     path('affsociete/', affsociete, name='affsociete'),
