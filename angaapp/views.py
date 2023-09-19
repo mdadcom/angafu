@@ -14,6 +14,9 @@ from datetime import timedelta
 from django.utils import timezone
 from django.db.models import Sum
 from django.http import HttpResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 import requests
 
 def is_venter(user):
@@ -524,7 +527,7 @@ def mon_vue(request):
     adresse_serveur = request.get_host()
     return HttpResponse(f"L'adresse de votre serveur est : {adresse_serveur}")
 
-
+"""
 @csrf_exempt
 def recevoirsms(request):
     if request.method == 'POST':
@@ -535,4 +538,16 @@ def recevoirsms(request):
         return JsonResponse({'message': 'SMS enregistré avec succès'}, status=200)
 
     return JsonResponse({'message': 'Requête non autorisée'}, status=400)
+"""
+
+
+
+class RecevoirSMS(APIView):
+    def post(self, request, *args, **kwargs):
+        corps_sms = request.data.get('corps_sms', '')
+
+        # Enregistrez le SMS dans la base de données
+        sms = SMS.objects.create(contenu=corps_sms)
+
+        return Response({'message': 'SMS enregistré avec succès'}, status=status.HTTP_200_OK)
 

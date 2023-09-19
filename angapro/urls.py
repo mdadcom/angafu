@@ -59,8 +59,8 @@ urlpatterns = [
     path('success/',success,name='success'),
     path('successp/',successp,name='successp'),
     path('mon_vue/',mon_vue,name='mon_vue'),
-    path('recevoirsms/',recevoirsms,name='recevoirsms'),
-    
+    #path('recevoirsms/',recevoirsms,name='recevoirsms'),
+    path('api/recevoirsms/', RecevoirSMS.as_view(), name='recevoirsms'),
     path('compte/', include('django.contrib.auth.urls')),
     path('compte/',include('compte.urls')),
     #path('register/user/', register_user, name='register_user'),
