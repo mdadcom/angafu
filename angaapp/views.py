@@ -146,28 +146,20 @@ def deletere(request, reservation_id):
     reserve.delete()
     return redirect('home')
 def affeditre(request, reservation_id):
-    # Obtenir la réservation à modifier
-    reservation = Reservations.objects.get(id=reservation_id)
     
-    if request.method == "POST":
-        # Si la demande est POST, cela signifie que le formulaire a été soumis, nous traitons la modification
-        form = ReservationsForm(request.POST, instance=reservation)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        # Si la demande est GET, cela signifie que nous affichons le formulaire de modification
-        form = ReservationsForm(instance=reservation)
+    reservation = Reservations.objects.get(id=reservation_id)
+    form = ReservationsForm(request.POST or None, instance=reservation)
     
     return render(request, 'editre.html', {'form': form, 'reservation': reservation})
-"""
+
 def updatere(request, reservation_id):
     reservation= Reservations.objects.get(id=reservation_id)
-    form=ReservationsForm(request.POST, instance=reservation)
+    form = ReservationsForm(request.POST, instance=reservation)
     if form.is_valid():
         form.save()
-    return redirect('home')
-"""
+        return redirect('affreserve')
+
+
 def addreserve(request, societe_id):
     societe = Societe.objects.get(id=societe_id)
     time=Heure_d.objects.all()
@@ -550,8 +542,18 @@ class RecevoirSMS(APIView):
     def post(self, request, *args, **kwargs):
         corps_sms = request.data.get('corps_sms', '')
 
-        # Enregistrez le SMS dans la base de données
-        sms = SMS.objects.create(contenu=corps_sms)
+        
+        SMS.objects.create(contenu=corps_sms)
+
+       
+        import requests
+        import json
+
+        url = 'http://angafu.m-dad.com/api/recevoirsms/'
+        data = {'corps_sms': corps_sms}
+
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(url, data=json.dumps(data), headers=headers)
 
         return Response({'message': 'SMS enregistré avec succès'}, status=status.HTTP_200_OK)
 

@@ -18,7 +18,18 @@ class ReservationsForm(forms.ModelForm):
 class ReservationsForm(forms.ModelForm):
     class Meta:
         model = Reservations
-        fields="__all__"
+        fields=('nom','prenom','date','time','destination','tel','num_trans',)
+        Widgets={
+            'nom':forms.TextInput(attrs={'class': 'form-control'}),
+            'prenom':forms.TextInput(attrs={'class': 'form-control'}),
+            'date':forms.DateInput(attrs={'class': 'form-control'}),
+            'time': forms.TimeInput(format='%H:%M', attrs={'class': 'form-control'}),
+            'destination': forms.Select(attrs={'class': 'form-control'}),
+            'tel':forms.TextInput(attrs={'class': 'form-control'}),
+            'num_trans':forms.TextInput(attrs={'class': 'form-control'}),
+            
+            
+            }
         
 class SocieteForm(forms.ModelForm):
     class Meta:

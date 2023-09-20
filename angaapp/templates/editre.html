@@ -3,7 +3,7 @@
 {% block content %}
 <div class="col-md-6">
       <div class="card">
-        <form method="post" action="{% url 'affeditre' reservation.id %}" class="form-horizontal">
+        <form method="post" action="{% url 'updatere' reservation.id %}" class="form-horizontal">
           {% csrf_token %}
           <div class="card-body">
             <h4 class="card-title">Reservation</h4>
@@ -43,9 +43,9 @@
             >HEURE DE DEPART</label>
             <div class="col-sm-9">
                    
-                      {% render_field form.time class="form-control" %}
+              {% render_field form.time type="time" class="form-control" %}
                       
-                    </select>
+                  
                 </div>
             </div> 
             <div class="form-group row">
