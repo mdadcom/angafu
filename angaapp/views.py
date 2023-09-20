@@ -540,20 +540,11 @@ def recevoirsms(request):
 @permission_classes([])
 class RecevoirSMS(APIView):
     def post(self, request, *args, **kwargs):
-        corps_sms = request.data.get('corps_sms', '')
+        serializer = SMSSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        corps_sms = serializer.validated_data.get('corps_sms', '')
 
-        
         SMS.objects.create(contenu=corps_sms)
-
-       
-        import requests
-        import json
-
-        url = 'http://angafu.m-dad.com/api/recevoirsms/'
-        data = {'corps_sms': corps_sms}
-
-        headers = {'Content-Type': 'application/json'}
-        response = requests.post(url, data=json.dumps(data), headers=headers)
 
         return Response({'message': 'SMS enregistré avec succès'}, status=status.HTTP_200_OK)
 

@@ -18,8 +18,9 @@ class ReservationsForm(forms.ModelForm):
 class ReservationsForm(forms.ModelForm):
     class Meta:
         model = Reservations
-        fields=('nom','prenom','date','time','destination','tel','num_trans',)
+        fields=('societe','nom','prenom','date','time','destination','tel','num_trans',)
         Widgets={
+            'societe': forms.Select(attrs={'class': 'form-control'}),
             'nom':forms.TextInput(attrs={'class': 'form-control'}),
             'prenom':forms.TextInput(attrs={'class': 'form-control'}),
             'date':forms.DateInput(attrs={'class': 'form-control'}),

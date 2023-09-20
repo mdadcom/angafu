@@ -20,3 +20,6 @@ class DestinationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Destination
         fields= '__all__'
+        
+class SMSSerializer(serializers.Serializer):
+    corps_sms = serializers.CharField()
