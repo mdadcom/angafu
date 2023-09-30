@@ -19,7 +19,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.decorators import authentication_classes, permission_classes,api_view
+from rest_framework.exceptions import ParseError
 import requests
 
 def is_venter(user):
@@ -323,7 +324,7 @@ def valide(request, confirme_id):
         
         
         account_sid = 'ACf039fa8809fc1dbe5f6a20ad139f8c20'
-        auth_token = '700ded712068492d7e33b187870ccc9a'
+        auth_token = '9954a4012ed53666a6e5e7096c433c08'
         twilio_phone_number = '+14782493931'
         
         client = Client(account_sid, auth_token)
@@ -349,6 +350,42 @@ def valide(request, confirme_id):
         return redirect('home')
     
     return render(request, 'valide.html', {'confirme': confirme})
+
+def valides(request, confirme_id):
+    confirme = Confirme.objects.get(id=confirme_id)
+    
+    if request.method == 'POST':
+        numticket = request.POST.get('numticket')
+        numchaise = request.POST.get('numchaise')
+        
+        
+        account_sid = 'ACf039fa8809fc1dbe5f6a20ad139f8c20'
+        auth_token = '9954a4012ed53666a6e5e7096c433c08'
+        twilio_phone_number = '+14782493931'
+        
+        client = Client(account_sid, auth_token)
+        
+        message = f'Votre ticket est validé avec succès pour la destination {", ".join(str(res.destination) for res in confirme.reservation.all())} à la gare de {", ".join(str(res.societe.first().nom) for res in confirme.reservation.all())} à {", ".join(str(res.time.time) for res in confirme.reservation.all())}. Numéro du ticket : {numticket}, chaise : {numchaise}.'
+        
+        
+        message = client.messages.create(
+            to=confirme.num_trans,
+           
+            from_=twilio_phone_number,
+            body=message
+        )
+        
+        valid = Valide.objects.create(numticket=numticket, numchaise=numchaise)
+        valid.confirmation.add(confirme)
+        valid.save()
+        
+        for reservation in confirme.reservation.all():
+            reservation.val = True
+            reservation.save()
+        
+        return redirect('affdesti')
+    
+    return render(request, 'valides.html', {'confirme': confirme})
 
 #def valide(request, confirme_id):
  #   confirme = Confirme.objects.get(id=confirme_id)
@@ -540,11 +577,15 @@ def recevoirsms(request):
 @permission_classes([])
 class RecevoirSMS(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = SMSSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        corps_sms = serializer.validated_data.get('corps_sms', '')
+        try:
+            serializer = SMSSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            corps_sms = serializer.validated_data.get('corps_sms', '')
+            SMS.objects.create(contenu=corps_sms)
+            return Response({'message': 'SMS enregistré avec succès'}, status=status.HTTP_200_OK)
+        except ParseError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        SMS.objects.create(contenu=corps_sms)
-
-        return Response({'message': 'SMS enregistré avec succès'}, status=status.HTTP_200_OK)
 

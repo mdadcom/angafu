@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        margin: 10px;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      .card h1 {
+        font-size: 1.5em;
+      }
+      
+      .card p {
+        font-size: 1.2em;
+      }
+      
+      .card a {
+        margin-right: 10px;
+      }
+      
+</style>
+
+  <h1>Liste des Utilisateurs</h1>
+  <ul>
+    {% for utilisateur in utilisateurs %}
+  <li>
+    {{ utilisateur.username }} {{ utilisateur.email}}
+    <a href="{% url 'detail_utilisateur' utilisateur.pk %}">Détails</a>
+    <a href="{% url 'editer_utilisateur' utilisateur.pk %}">Éditer</a>
+    <a href="{% url 'supprimer_utilisateur' utilisateur.pk %}">Supprimer</a>
+  </li>
+{% endfor %}
+
+  </ul>
+  <a href="{% url 'register_user' %}">Ajouter un Utilisateur</a>
+{% endblock %}

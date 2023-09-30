@@ -58,3 +58,37 @@ def register_user(request):
     else:
         form = RegisterUserForm()
     return render(request, 'register.html', {'form': form, 'msg': msg})
+
+
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+
+class ListeUtilisateurs(ListView):
+    model = User
+    template_name = 'liste_utilisateurs.html'
+    context_object_name = 'utilisateurs'  
+
+class AjouterUtilisateur(CreateView):
+    model = User
+    template_name = 'ajouter_utilisateur.html'
+    fields = ['champ1', 'champ2', ...]
+
+class EditerUtilisateur(UpdateView):
+    model = User
+    template_name = 'editer_utilisateur.html'
+    fields = ['champ1', 'champ2', ...]
+
+class SupprimerUtilisateur(DeleteView):
+    model = User
+    template_name = 'supprimer_utilisateur.html'
+    success_url = reverse_lazy('liste_utilisateurs')
+    
+class DetailUtilisateur(DetailView):
+    model = User
+    template_name = 'detail_utilisateur.html'
+    context_object_name = 'utilisateur'
+
+    def get_object(self):
+        # Récupère l'objet utilisateur en fonction de l'ID de l'URL
+        return get_object_or_404(User, pk=self.kwargs['pk'])

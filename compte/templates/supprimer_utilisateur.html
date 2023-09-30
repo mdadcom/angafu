@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Confirmer la Suppression</h1>
+  <p>Êtes-vous sûr de vouloir supprimer l'utilisateur {{ utilisateur.nom }} {{ utilisateur.prenom }}?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Oui, Supprimer</button>
+  </form>
+{% endblock %}

@@ -54,6 +54,7 @@ urlpatterns = [
     path('rejeter/<int:reservation_id>/', rejeter, name='rejeter'),
     path('affichv/<int:confirme_id>',affichv,name='affichv'),
     path('valide/<int:confirme_id>',valide,name='valide'),
+    path('valides/<int:confirme_id>',valides,name='valides'),
     path('affdes/<int:societe_id>',affdes,name='affdes'),
     path('affdes/<int:societe_id>',affdes,name='affdes'),
     path('success/',success,name='success'),
