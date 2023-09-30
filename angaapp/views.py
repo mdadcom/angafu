@@ -323,9 +323,9 @@ def valide(request, confirme_id):
         numchaise = request.POST.get('numchaise')
         
         
-        account_sid = 'ACf039fa8809fc1dbe5f6a20ad139f8c20'
-        auth_token = '9954a4012ed53666a6e5e7096c433c08'
-        twilio_phone_number = '+14782493931'
+        account_sid = 'AC6b6296baa1c642b9d21695986627bf4e'
+        auth_token = '4a9bbaafb4d1fa1e4875cb7d890a9fe5'
+        twilio_phone_number = '+19208802931'
         
         client = Client(account_sid, auth_token)
         
