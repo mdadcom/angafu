@@ -360,7 +360,7 @@ def valides(request, confirme_id):
         
         
         account_sid = 'ACf039fa8809fc1dbe5f6a20ad139f8c20'
-        auth_token = 'efeef4daa41033069d11d99c8ac8c207'
+        auth_token = 'f39b4a683357281764c7114c1741a15f'
         twilio_phone_number = '+14782493931'
         
         client = Client(account_sid, auth_token)

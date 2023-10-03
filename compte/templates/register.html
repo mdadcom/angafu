@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load widget_tweaks %}
 <html dir="ltr">
   <head>
     <meta charset="utf-8" />
@@ -33,6 +34,16 @@
     <![endif]-->
   </head>
 
+  <style>
+    label {
+      color: #ffffff;
+      font-weight: bold;
+    }
+    h4{
+      color: #ffffff;
+      font-weight: bold;
+    }
+  </style>
   <body>
     <div class="main-wrapper">
       <!-- ============================================================== -->
@@ -65,7 +76,6 @@
         <p>il y a eu une erreur avec votre formulaire</p>
       {% endif %}
         
-        <div class="auth-box bg-dark border-top border-secondary">
           <div>
             <div class="text-center pt-3 pb-3">
               <span class="db"
@@ -73,32 +83,82 @@
               </span>
             </div>
             <!-- Form -->
-            <form
-            method="post"
-              class="form-horizontal mt-3"
-              id="loginform"
-              action="{% url 'register_user' %}"
-            >
-            {% csrf_token %}
-              {{ form.as_p }}
-              <div class="row border-top border-secondary">
-                <div class="col-12">
-                  <div class="form-group">
-                    <div class="pt-3 d-grid">
-                      <button
-                        class="btn btn-block btn-lg btn-info"
-                        type="submit"
+                <form method="post" action="{% url 'register_user' %}" class="form-horizontal">
+                  {% csrf_token %}
+                  <div class="card-body">
+                    <h4 class="card-title">Créer un Utilisateur</h4>
+                    <div class="form-group row">
+                      <label for="nom" class="col-sm-3 text-end control-label col-form-label">Username</label>
+                      <div class="col-sm-9">
+                          {% render_field form.username %}
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="nom" class="col-sm-3 text-end control-label col-form-label">Email</label>
+                      <div class="col-sm-9">
+                          {% render_field form.email %}
+                      </div>
+                  </div>
+                    <div class="form-group row">
+                      <label
+                        for="lname"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >Password</label
                       >
-                        Sign Up
+                      <div class="col-sm-9">
+                        {% render_field form.password1 class="form-control" %}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label
+                        for="date"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >Password</label
+                      >
+                      <div class="col-sm-9">
+                        {% render_field form.password2 class="form-control" %}
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label 
+                      class="col-sm-3 text-end control-label col-form-label" 
+                      for="destination"
+                      >Destination</label>
+                      <div class="col-sm-9">
+                                {% render_field form.destinations class="form-control" %}
+                          </div>
+                      </div> 
+                   
+                      <label
+                        for="tel"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >Is admin</label
+                      >
+                     {{form.is_admin}}
+                     <label
+                        for="tel"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >Agent de Liaison</label
+                      >
+                     {{form.is_agent_de_liaison}}
+                     <label
+                        for="tel"
+                        class="col-sm-3 text-end control-label col-form-label"
+                        >Vendeur</label
+                      >
+                     {{form.is_vendeur}}
+                 
+                  <div class="border-top">
+                    <div class="card-body">
+                      <button type="Submit" class="btn btn-primary">
+                        Enregistrer
                       </button>
                     </div>
                   </div>
-                </div>
-              </div>
-            </form>
+                </form>
+
           </div>
         </div>
-      </div>
       <!-- ============================================================== -->
       <!-- Login box.scss -->
       <!-- ============================================================== -->
