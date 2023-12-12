@@ -21,6 +21,9 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import authentication_classes, permission_classes,api_view
 from rest_framework.exceptions import ParseError
+import firebase_admin
+from firebase_admin import credentials, db
+from django.shortcuts import render
 import requests
 
 def is_venter(user):
@@ -571,8 +574,6 @@ def recevoirsms(request):
 
     return JsonResponse({'message': 'Requête non autorisée'}, status=400)
 """
-
-
 @authentication_classes([])
 @permission_classes([])
 class RecevoirSMS(APIView):
@@ -587,5 +588,19 @@ class RecevoirSMS(APIView):
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+#def message(request):
+    # Initialiser Firebase
+ #   cred = credentials.Certificate("C:\Users\Administrator\Desktop\angafu\cle\google-services.json")
+  #  firebase_admin.initialize_app(cred, {'databaseURL': 'https://transreceiv-default-rtdb.firebaseio.com/'})
+
+    # Récupérer les données depuis Firebase
+   # ref = db.reference('/')
+    #data = ref.get()
+
+    # Passer les données à votre modèle ou les utiliser directement dans le contexte
+    #return render(request, 'messagerie.html', {'data': data})
+
 
 
