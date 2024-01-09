@@ -7,6 +7,7 @@ from .form import*
 from django.http import HttpResponse
 from rest_framework import generics
 from .serializers import *
+import logging
 from twilio.rest import Client
 from django.db.models import Q
 from django.db.models import Count
@@ -574,6 +575,8 @@ def recevoirsms(request):
 
     return JsonResponse({'message': 'Requête non autorisée'}, status=400)
 """
+
+"""
 @authentication_classes([])
 @permission_classes([])
 class RecevoirSMS(APIView):
@@ -588,7 +591,7 @@ class RecevoirSMS(APIView):
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+"""
 
 #def message(request):
     # Initialiser Firebase
@@ -603,4 +606,73 @@ class RecevoirSMS(APIView):
     #return render(request, 'messagerie.html', {'data': data})
 
 
+logger = logging.getLogger(__name__)
+
+class AddReservationView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Supposons que votre requête POST contienne des champs 'speaker', 'date', 'subject', 'type', 'avatar'
+            societe = request.data.get('societe')
+            nom = request.data.get('nom')
+            prenom = request.data.get('prenom')
+            date = request.data.get('date')
+            time = request.data.get('time')
+            destination = request.data.get('destination')
+            tel = request.data.get('tel')
+            num_trans = request.data.get('num_trans')
+            
+
+            # Votre logique de traitement spécifique ici, par exemple, enregistrez l'événement dans la base de données
+            reserve = Reservations.objects.create(
+                societe=societe,
+                nom=nom,
+                prenom=prenom,
+                date=date,
+                time=time,
+                destination=destination,
+                tel=tel,
+                num_trans=num_trans,
+            )
+
+            # Sérialisez l'objet Event créé
+            serializer = ReservationsSerializer(reserve)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            logger.error("Une erreur s'est produite : %s" % str(e))
+            return Response({"error": "Une erreur s'est produite"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    
+def hview(request):
+    
+    heures_d = Heure_d.objects.all()
+    form = HeForm(heures_d=heures_d)
+    
+class HeureDListCreateView(generics. ListCreateAPIView):
+ queryset = Heure_d.objects.all()
+ serializer_class = HeurSerializer
+    
+
+logger = logging.getLogger(__name__)
+
+class ReceiveSMSView(APIView):
+    @csrf_exempt
+    def post(self, request, *args, **kwargs):
+        try:
+            # Supposons que votre requête POST contienne des champs 'msg' et 'phoneNo'
+            msg_body = request.data.get('msg', '')
+            phone_no = request.data.get('phoneNo', '')
+
+            # Votre logique de traitement spécifique ici, par exemple, enregistrez le message dans la base de données
+            SMS.objects.create(body=msg_body, phone_number=phone_no)
+
+            return Response({'status': 'success'})
+
+        except Exception as e:
+            logger.error("Une erreur s'est produite : %s" % str(e))
+            return Response({"error": "Une erreur s'est produite"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def get(self, request, *args, **kwargs):
+        return Response({'status': 'error', 'message': 'Invalid request method'})
 

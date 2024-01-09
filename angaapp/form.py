@@ -41,3 +41,12 @@ class SocieteForm(forms.ModelForm):
             'nom':forms.TextInput(attrs={'class': 'form-control'}),
             'img':forms.FileField(),
         }
+        
+        
+class HeForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        heures_d = kwargs.pop('heures_d')
+        super(HeForm, self).__init__(*args, **kwargs)
+        self.fields['time'].queryset = heures_d
+
+    # Vos autres champs de formulaire ici...

@@ -39,7 +39,7 @@ class Reservations(models.Model):
     time=models.ForeignKey(Heure_d, on_delete=models.CASCADE)
     destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
     tel=models.CharField(max_length=80, blank=True)
-    mode_paiement = models.CharField(max_length=20, choices=MODE_PAIEMENT_CHOICES, blank=True)
+    mode_paiement = models.CharField(max_length=20, choices=MODE_PAIEMENT_CHOICES,null=True, blank=True)
     num_trans=models.CharField(max_length=80, blank=True)
     confirm = models.BooleanField(default=False)
     val = models.BooleanField(default=False)
@@ -85,8 +85,6 @@ class Valide(models.Model):
 from django.db import models
 
 class SMS(models.Model):
-    contenu = models.TextField()
-    date_reception = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"SMS reçu le {self.date_reception}"
+    body = models.TextField()
+    phone_number = models.CharField(max_length=20)
+    timestamp = models.DateTimeField(auto_now_add=True)
