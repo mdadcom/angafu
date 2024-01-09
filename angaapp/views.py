@@ -22,8 +22,6 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import authentication_classes, permission_classes,api_view
 from rest_framework.exceptions import ParseError
-import firebase_admin
-from firebase_admin import credentials, db
 from django.shortcuts import render
 import requests
 
