@@ -313,9 +313,9 @@ def affvalid(request,reservation_id):
 def affichv(request, confirme_id):
     confirme=get_object_or_404(Confirme, id=confirme_id)
     
-    return render(request, 'valide.html',{'confirme':confirme})
+    return render(request, 'valides.html',{'confirme':confirme})
 
-
+""""
 
 def valide(request, confirme_id):
     confirme = Confirme.objects.get(id=confirme_id)
@@ -352,18 +352,22 @@ def valide(request, confirme_id):
         return redirect('home')
     
     return render(request, 'valide.html', {'confirme': confirme})
+    
+"""""
 
 def valides(request, confirme_id):
-    confirme = Confirme.objects.get(id=confirme_id)
+    #confirme = Confirme.objects.get(id=confirme_id)
+    confirme = get_object_or_404(Confirme, id=confirme_id)
+    
     
     if request.method == 'POST':
         numticket = request.POST.get('numticket')
         numchaise = request.POST.get('numchaise')
         
         
-        account_sid = 'ACf039fa8809fc1dbe5f6a20ad139f8c20'
-        auth_token = 'f1f06a012735f4b70a4f4afc25e59957'
-        twilio_phone_number = '+14782493931'
+        account_sid = 'AC2727fa292b9137861bd7b1f2b9437a20'
+        auth_token = '2c0c500d6a9add6a79a5cedc2fa106c3'
+        twilio_phone_number = '+14242654790'
         
         client = Client(account_sid, auth_token)
         
@@ -384,8 +388,9 @@ def valides(request, confirme_id):
         for reservation in confirme.reservation.all():
             reservation.val = True
             reservation.save()
+            
         
-        return redirect('affdesti')
+        
     
     return render(request, 'valides.html', {'confirme': confirme})
 
@@ -460,9 +465,13 @@ def valide(request, confirme_id):
 """
 def rejeter(request, reservation_id):
     reservation = get_object_or_404(Reservations, id=reservation_id)
+    reservation.confirme_set.all().delete()
     reservation.confirm = False
     reservation.save()
-    return redirect('affavalid')
+    
+    destination_id = reservation.destination.id
+    
+    return redirect('affavalid', destination_id=destination_id)
 def affdes(request, societe_id):
     societe = get_object_or_404(Societe, id=societe_id)
     reservations_confirmees_non_valides = societe.reservations_set.filter(confirm=True, val=False)

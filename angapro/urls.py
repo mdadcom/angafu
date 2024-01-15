@@ -53,7 +53,7 @@ urlpatterns = [
     path('affvalid/<int:reservation_id>',affvalid,name='affvalid'),
     path('rejeter/<int:reservation_id>/', rejeter, name='rejeter'),
     path('affichv/<int:confirme_id>',affichv,name='affichv'),
-    path('valide/<int:confirme_id>',valide,name='valide'),
+    #path('valide/<int:confirme_id>',valide,name='valide'),
     path('valides/<int:confirme_id>',valides,name='valides'),
     path('affdes/<int:societe_id>',affdes,name='affdes'),
     path('affdes/<int:societe_id>',affdes,name='affdes'),
@@ -69,5 +69,5 @@ urlpatterns = [
     path('compte/',include('compte.urls')),
     #path('register/user/', register_user, name='register_user'),
     #path('register/superuser/', register_superuser, name='register_superuser'),
-   # path('destination/<int:destination_id>/',destination,name='destination'),
+    # path('destination/<int:destination_id>/',destination,name='destination'),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
