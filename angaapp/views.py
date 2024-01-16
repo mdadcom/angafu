@@ -371,7 +371,7 @@ def valides(request, confirme_id):
         
         client = Client(account_sid, auth_token)
         
-        message = f'Votre ticket est validé avec succès pour la destination {", ".join(str(res.destination) for res in confirme.reservation.all())} à la gare de {", ".join(str(res.societe.first().nom) for res in confirme.reservation.all())} à {", ".join(str(res.time.time) for res in confirme.reservation.all())}. Numéro du ticket : {numticket}, chaise : {numchaise}.'
+        message = f'Votre ticket de la compagnie {", ".join(str(res.societe.first().nom) for res in confirme.reservation.all())} est confirmé avec succès pour le trajet {", ".join(str(res.recorded_destination) for res in confirme.reservation.all())}-{", ".join(str(res.destination) for res in confirme.reservation.all())} à {", ".join(str(res.time.time) for res in confirme.reservation.all())}. Numéro du ticket : {numticket}, chaise : {numchaise}.'
         
         
         message = client.messages.create(
