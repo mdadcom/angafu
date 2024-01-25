@@ -11,11 +11,13 @@
 
     <!-- Affichage des réservations par période -->
     {% for periode in reservations_par_periode %}
+    
         <div class="card mt-3">
             <div class="card-body">
                 <h5 class="card-title">Période : {{ periode.debut_periode|date:"d/m/Y" }} - {{ periode.fin_periode|date:"d/m/Y" }}</h5>
                 <p>Total des réservations : {{ periode.total }}</p>
                 <p>Montant total : {{ periode.montant_total|default:"0000" }}F.cfa</p>
+                <div class="table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
@@ -50,6 +52,7 @@
                 </table>
             </div>
         </div>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}
