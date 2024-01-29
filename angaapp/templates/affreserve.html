@@ -55,6 +55,8 @@
             {% if request.user.is_superuser %}
             <td>
               <a href="{% url 'deletere' reservation.id %}" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>
+              {% endif %}
+              {% if request.user.is_superuseror or user.is_admin or user.is_vendeur %}
             <a href="{% url 'affeditre' reservation.id %}" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
             </td>
             {% endif %}
