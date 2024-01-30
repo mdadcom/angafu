@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from rest_framework import generics
 from .serializers import *
 import logging
+from django.conf import settings
 from twilio.rest import Client
 from django.db.models import Q
 from django.db.models import Count
@@ -365,11 +366,10 @@ def valides(request, confirme_id):
         numchaise = request.POST.get('numchaise')
         
         
-        account_sid = 'AC2727fa292b9137861bd7b1f2b9437a20'
-        auth_token = 'b92ad0e7164665b077d9946c673459cb'
+        
         twilio_phone_number = '+14242654790'
         
-        client = Client(account_sid, auth_token)
+        client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
         
         message = f'Votre ticket de la compagnie {", ".join(str(res.societe.first().nom) for res in confirme.reservation.all())} est confirmé avec succès pour le trajet {", ".join(str(res.societe.first().destination.nom) for res in confirme.reservation.all())}-{", ".join(str(res.destination.nom) for res in confirme.reservation.all())} du {", ".join(res.date.strftime("%d-%m-%Y") for res in confirme.reservation.all())} à {", ".join(str(res.time.time) for res in confirme.reservation.all())}. Numéro du ticket : {numticket}, chaise : {numchaise}.'
         

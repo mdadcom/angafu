@@ -11,7 +11,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from .config import auth_token
 import os
+
+
+TWILIO_ACCOUNT_SID = 'AC2727fa292b9137861bd7b1f2b9437a20'
+TWILIO_AUTH_TOKEN = auth_token
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
