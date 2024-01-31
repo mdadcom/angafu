@@ -25,7 +25,8 @@
   }
 </style>
 
-  
+  <h1>{{societe.nom}}</h1>
+
     <div class="col-md-6">
       <div class="card">
         <form method="post" id="reservationform" action="{% url 'addreserve' societe.id %}" class="form-horizontal">
@@ -85,11 +86,11 @@
             for="time"
             >HEURE DE DEPART</label>
             <div class="col-sm-9">
-                    <select name="time" class="form-control" required>
-                      {% for time in time %}
-                        <option value="{{time.id}}">{{time.time|time:"H:i" }}</option>
-                        {% endfor %}
-                    </select>
+              <select name="time" class="form-control" required>
+                {% for heure_depart in heures_depart_par_societe %}
+                    <option value="{{ heure_depart.id }}">{{ heure_depart.time|time:"H:i" }}</option>
+                {% endfor %}
+            </select>
                 </div>
             </div> 
             <div class="form-group row">

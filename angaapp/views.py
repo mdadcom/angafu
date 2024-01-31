@@ -92,7 +92,8 @@ def dest(request, destination_id):
 
 def affdestination(request):
     destination = Destination.objects.all()
-    return render(request, 'affdestination.html',)
+    societe=Societe.objects.all()
+    return render(request, 'affdestination.html',{'societe':societe})
 def adddestination(request):
     if request.method == 'POST':
         nom=request.POST.get('nom')
@@ -100,8 +101,10 @@ def adddestination(request):
     return redirect('affdestination')
 def addheure(request):
     if request.method == 'POST':
+        societe_pk=request.POST.get('societe')
+        societe=Societe.objects.get(pk=societe_pk)
         time=request.POST.get('time')
-        Heure_d.objects.create(time=time)
+        Heure_d.objects.create(societe=societe,time=time)
     return redirect('affdestination')
 def affsociete(request):
     destination = Destination.objects.all()
@@ -115,18 +118,17 @@ def addsociete(request):
         Societe.objects.create(destination=destination,nom=nom,img=img)
     return redirect('affsociete')
 def reserve(request, societe_id):
-    
-    societe =get_object_or_404(Societe, id=societe_id)
+    societe = get_object_or_404(Societe, id=societe_id)
     societe_destination_id = societe.destination.id
-    time=Heure_d.objects.all()
-    destination=Destination.objects.exclude(id=societe_destination_id)
-    context={
-        
-        'societe':societe,
-        'time':time,
-        'destination':destination,
+    heures_depart_par_societe = Heure_d.objects.filter(societe_id=societe_id)  # Utilisez societe_id ici
+    destination = Destination.objects.exclude(id=societe_destination_id)
+    context = {
+        'societe': societe,
+        'heures_depart_par_societe': heures_depart_par_societe,
+        'destination': destination,
     }
     return render(request, 'reservation.html', context)
+
 
 def deleteso(request, societe_id):
     societe=Societe.objects.get(id=societe_id)
