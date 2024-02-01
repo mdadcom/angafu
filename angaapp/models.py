@@ -25,6 +25,7 @@ class Societe(models.Model):
         return self.nom
 class Heure_d(models.Model):
     societe = models.ForeignKey(Societe, on_delete=models.CASCADE)
+    destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
     time=models.TimeField()
 class Reservations(models.Model):
     MODE_PAIEMENT_CHOICES = (

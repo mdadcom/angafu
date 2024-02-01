@@ -33,6 +33,7 @@
           {% csrf_token %}
           <div class="card-body">
             <h4 class="card-title">Reservation</h4>
+            <input type="hidden" id="id_societe" name="societe" value="{{ societe.id }}">
             <div class="form-group row">
               <label
                 for="nom"
@@ -81,31 +82,33 @@
               </div>
             </div>
             <div class="form-group row">
-            <label 
-            class="col-sm-3 text-end control-label col-form-label" 
-            for="time"
-            >HEURE DE DEPART</label>
-            <div class="col-sm-9">
-              <select name="time" class="form-control" required>
-                {% for heure_depart in heures_depart_par_societe %}
-                    <option value="{{ heure_depart.id }}">{{ heure_depart.time|time:"H:i" }}</option>
-                {% endfor %}
-            </select>
-                </div>
-            </div> 
-            <div class="form-group row">
               <label 
               class="col-sm-3 text-end control-label col-form-label" 
               for="destination"
               >DESTINATION</label>
               <div class="col-sm-9">
-                      <select name="destination" class="form-control" required>
-                        {% for destination in destination %}
+                      <select name="destination" id="id_destination" class="form-control" required>
+                        <option >--SELECTION DESTINATION--</option>
+                        {% for destination in destinations %}
                           <option value="{{destination.id}}">{{destination.nom }}</option>
                           {% endfor %}
                       </select>
                   </div>
               </div> 
+            <div class="form-group row">
+            <label 
+            class="col-sm-3 text-end control-label col-form-label" 
+            for="time"
+            >HEURE DE DEPART</label>
+            <div class="col-sm-9">
+              <select name="time" id="id_time" class="form-control" required>
+                <option >--SELECTION HEURE--</option>
+                {% for heure_depart in heures_depart_par_societe %}
+                <option value="{{ heure_depart.id }}" class="heure_depart_option" style="display: none;" data-destination="{{ heure_depart.societe.destination.id }}">{{ heure_depart.time|time:"H:i" }}</option>
+                {% endfor %}
+            </select>
+                </div>
+            </div> 
             <div class="form-group row">
               <label
                 for="tel"
@@ -142,9 +145,10 @@
             <label for="num_trans" class="col-sm-3 text-end control-label col-form-label">NUMERO DE TRANSFERT</label>
             <div class="col-sm-9">
                 <input type="text" name="num_trans" class="form-control" id="num_trans" placeholder="Numero de transfert" />
-                <div id="error_message" style="color: red;"></div>
+                <div id="num_trans_error" style="color: red; display: none;"></div> <!-- Message d'erreur masqué par défaut -->
             </div>
         </div>
+        
           <div class="border-top">
             <div class="card-body">
               <button type="Submit" class="btn btn-primary">
@@ -199,5 +203,11 @@
         });
     });
     </script>
+    
+  <script src="{% static 'dist/js/heurch.js'%}"></script>
+  <script src="{% static 'dist/js/heurchs.js'%}"></script>
+  <script src="{% static 'dist/js/modep.js'%}"></script>
+  
+  
   
 {% endblock  %}

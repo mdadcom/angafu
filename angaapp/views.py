@@ -93,7 +93,7 @@ def dest(request, destination_id):
 def affdestination(request):
     destination = Destination.objects.all()
     societe=Societe.objects.all()
-    return render(request, 'affdestination.html',{'societe':societe})
+    return render(request, 'affdestination.html',{'destination':destination,'societe':societe})
 def adddestination(request):
     if request.method == 'POST':
         nom=request.POST.get('nom')
@@ -103,9 +103,19 @@ def addheure(request):
     if request.method == 'POST':
         societe_pk=request.POST.get('societe')
         societe=Societe.objects.get(pk=societe_pk)
+        destination_pk=request.POST.get('destination')
+        destination=Destination.objects.get(pk=destination_pk)
         time=request.POST.get('time')
-        Heure_d.objects.create(societe=societe,time=time)
+        Heure_d.objects.create(societe=societe,destination=destination,time=time)
     return redirect('affdestination')
+def get_heures_depart(request):
+    if request.method == 'GET' and 'destination_id' in request.GET:
+        destination_id = request.GET.get('destination_id')
+        societe_id = request.GET.get('societe_id')
+        heures_depart = Heure_d.objects.filter(destination_id=destination_id, societe_id=societe_id).values('id', 'time')
+        return JsonResponse(list(heures_depart), safe=False)
+    else:
+        return JsonResponse({'error': 'Invalid request'})
 def affsociete(request):
     destination = Destination.objects.all()
     return render(request, 'affsociete.html',{'destination':destination})
@@ -119,13 +129,15 @@ def addsociete(request):
     return redirect('affsociete')
 def reserve(request, societe_id):
     societe = get_object_or_404(Societe, id=societe_id)
+    
     societe_destination_id = societe.destination.id
-    heures_depart_par_societe = Heure_d.objects.filter(societe_id=societe_id)  # Utilisez societe_id ici
-    destination = Destination.objects.exclude(id=societe_destination_id)
+    heures_depart_par_societe = Heure_d.objects.filter(societe_id=societe_id)
+    destinations = Destination.objects.exclude(id=societe_destination_id)
     context = {
         'societe': societe,
         'heures_depart_par_societe': heures_depart_par_societe,
-        'destination': destination,
+        'destinations': destinations,
+        
     }
     return render(request, 'reservation.html', context)
 
