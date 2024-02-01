@@ -214,9 +214,73 @@
     });
     </script>
     
-  <script src="{% static 'dist/js/heurch.js'%}"></script>
-  <script src="{% static 'dist/js/heurchs.js'%}"></script>
-  <script src="{% static 'dist/js/modep.js'%}"></script>
+  <script>
+    document.getElementById('id_destination').addEventListener('change', function() {
+      var destinationId = this.value;
+      var societeId = document.getElementById('id_societe').value;
+      var car = document.getElementById('id_car').value; // Récupère la valeur de la car sélectionnée
+      var heuresDepartSelect = document.getElementById('id_time');
+      heuresDepartSelect.innerHTML = '';
+  
+      fetch('/get_heures_depart/?destination_id=' + destinationId + '&societe_id=' + societeId + '&car=' + car)
+          .then(response => response.json())
+          .then(data => {
+              data.forEach(heure_depart => {
+                  var option = document.createElement('option');
+                  option.value = heure_depart.id;
+                  option.textContent = heure_depart.time;
+                  heuresDepartSelect.appendChild(option);
+              });
+          });
+  });
+  
+  </script>
+  <script>
+    document.getElementById('id_destination').addEventListener('change', function() {
+      var selectedDestination = this.value;
+      var options = document.querySelectorAll('.heure_depart_option');
+  
+      // Masquer toutes les options d'heure de départ
+      options.forEach(function(option) {
+          option.style.display = 'none';
+      });
+  
+      // Afficher les options correspondant à la destination sélectionnée
+      if (selectedDestination) {
+          var heuresDepartOptions = document.querySelectorAll('.heure_depart_option[data-destination="' + selectedDestination + '"]');
+          heuresDepartOptions.forEach(function(option) {
+              option.style.display = '';
+          });
+      }
+  });
+  
+  </script>
+  <script>
+    document.getElementById('reservationform').addEventListener('submit', function(event) {
+      var modePaiementInputs = document.querySelectorAll('input[name="mode_paiement"]');
+      var modePaiementSelected = false;
+  
+      // Vérifie si un mode de paiement est sélectionné
+      modePaiementInputs.forEach(function(input) {
+          if (input.checked) {
+              modePaiementSelected = true;
+          }
+      });
+  
+      // Si aucun mode de paiement n'est sélectionné, affiche un message d'erreur
+      if (!modePaiementSelected) {
+          event.preventDefault(); // Empêche la soumission du formulaire
+  
+          var numTransInput = document.getElementById('num_trans');
+          numTransInput.focus(); // Place le focus sur le champ de saisie du numéro de transfert
+          numTransInput.style.borderColor = 'red'; // Change la couleur du bord du champ
+          numTransInput.placeholder = 'Veuillez sélectionner un mode de paiement'; // Affiche le message d'erreur dans le champ
+      }
+  
+  
+  });
+  
+  </script>
   
   
   
