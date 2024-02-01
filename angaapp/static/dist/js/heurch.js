@@ -1,11 +1,11 @@
 document.getElementById('id_destination').addEventListener('change', function() {
     var destinationId = this.value;
-    var societeId = document.getElementById('id_societe').value; // Récupère l'ID de la société sélectionnée
+    var societeId = document.getElementById('id_societe').value;
+    var car = document.getElementById('id_car').value; // Récupère la valeur de la car sélectionnée
     var heuresDepartSelect = document.getElementById('id_time');
-    heuresDepartSelect.innerHTML = ''; // Efface les anciennes options
+    heuresDepartSelect.innerHTML = '';
 
-    // Effectue une requête AJAX pour récupérer les heures de départ en fonction de la destination et de la société sélectionnées
-    fetch('/get_heures_depart/?destination_id=' + destinationId + '&societe_id=' + societeId)
+    fetch('/get_heures_depart/?destination_id=' + destinationId + '&societe_id=' + societeId + '&car=' + car)
         .then(response => response.json())
         .then(data => {
             data.forEach(heure_depart => {

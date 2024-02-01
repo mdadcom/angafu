@@ -105,14 +105,17 @@ def addheure(request):
         societe=Societe.objects.get(pk=societe_pk)
         destination_pk=request.POST.get('destination')
         destination=Destination.objects.get(pk=destination_pk)
+        car = request.POST.get('car')
         time=request.POST.get('time')
-        Heure_d.objects.create(societe=societe,destination=destination,time=time)
+        Heure_d.objects.create(societe=societe, car=car,destination=destination,time=time)
     return redirect('affdestination')
 def get_heures_depart(request):
-    if request.method == 'GET' and 'destination_id' in request.GET:
+    if request.method == 'GET' and 'destination_id' in request.GET and 'societe_id' in request.GET and 'car' in request.GET:
         destination_id = request.GET.get('destination_id')
         societe_id = request.GET.get('societe_id')
-        heures_depart = Heure_d.objects.filter(destination_id=destination_id, societe_id=societe_id).values('id', 'time')
+        car = request.GET.get('car')
+        
+        heures_depart = Heure_d.objects.filter(destination_id=destination_id, societe_id=societe_id, car=car).values('id', 'time')
         return JsonResponse(list(heures_depart), safe=False)
     else:
         return JsonResponse({'error': 'Invalid request'})
@@ -252,7 +255,8 @@ def confirme(request, reservation_id):
         reservation = Reservations.objects.get(id=reservation_id)
         
         # Vérifier si les conditions de num_trans et montant_paye sont remplies
-        if num_trans == reservation.num_trans and montant_paye in ['7000','7500','9000','8000','10000', '15000', '20000']:
+        montant_paye_int = int(montant_paye)  # Convertir le montant payé en entier
+        if num_trans == reservation.num_trans and 3000 <= montant_paye_int <= 50000:
             confirme_instance = Confirme.objects.create(num_trans=num_trans, trans_id=trans_id, montant_paye=montant_paye)
             reservation.confirm = True
             reservation.save()

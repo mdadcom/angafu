@@ -21,6 +21,7 @@
             <th scope="col">NOM</th>
             <th scope="col">PRENOM</th>
             <th scope="col">DATE DEPART</th>
+            <th scope="col">CAR</th>
             <th scope="col">HEURE</th>
             <th scope="col">DESTINATION</th>
             <th scope="col">NUMERO TELEPHONE</th>
@@ -40,6 +41,7 @@
             <td>{{reservation.nom}}</td>
             <td>{{reservation.prenom}}</td>
             <td>{{reservation.date}}</td>
+            <td>{{reservation.time.car}}</td>
             <td>{{reservation.time.time|time:"H:i"}}</td>
             <td>{{reservation.destination}}</td>
             <td>{{reservation.tel}}</td>
