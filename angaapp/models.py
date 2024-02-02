@@ -36,12 +36,12 @@ class Reservations(models.Model):
     
     code_reservation = models.CharField(max_length=100, unique=True, editable=False)
     societe=models.ManyToManyField(Societe,)
+    tel=models.CharField(max_length=80, blank=True)
     nom=models.CharField(max_length=80, blank=True)
     prenom=models.CharField(max_length=80, blank=True)
     date=models.DateField()
     time=models.ForeignKey(Heure_d, on_delete=models.CASCADE)
     destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
-    tel=models.CharField(max_length=80, blank=True)
     mode_paiement = models.CharField(max_length=20, choices=MODE_PAIEMENT_CHOICES,null=True, blank=True)
     num_trans=models.CharField(max_length=80, blank=True)
     confirm = models.BooleanField(default=False)

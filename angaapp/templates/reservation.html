@@ -24,16 +24,64 @@
       border: 1px solid #007bff; /* Changer le style de la bordure lorsque le bouton est sélectionné */
   }
 </style>
+<script>
+  $(document).ready(function() {
+      // Récupérer l'élément HTML du champ d'entrée pour le numéro de CNIB
+      var numeroTelInput = $('#tel');
+    
+      // Associer un gestionnaire d'événements "keyup" à l'élément HTML
+      numeroTelInput.keyup(function() {
+        // Récupérer la valeur entrée par l'utilisateur
+        var numeroTel = numeroTelInput.val();
+    
+        // Envoyer une requête AJAX à la vue "load-donneur" pour récupérer les données du donneur correspondant au "numero_cnib"
+        $.ajax({
+          url: "/load-reserve/",
+          data: {
+            "tel": numeroTel
+          },
+          dataType: "json",
+          success: function(data) {
+            if (data.reservation) {
+              $('#nom').val(data.reservation.nom)
+              $('#prenom').val(data.reservation.prenom);
+              $('#num_trans').val(data.reservation.num_trans);
+            }
+          },
+          error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+          }
+        });
+      });
+    });
+    
+</script>
 
   <h1>{{societe.nom}}</h1>
 
     <div class="col-md-6">
       <div class="card">
-        <form method="post" id="reservationform" action="{% url 'addreserve' societe.id %}" class="form-horizontal">
+        <form method="post" id="reservationform" action="{% url 'addreserve' societe.id %}" url="{% url 'load-reserve' %}" class="form-horizontal">
           {% csrf_token %}
           <div class="card-body">
             <h4 class="card-title">Reservation</h4>
             <input type="hidden" id="id_societe" name="societe" value="{{ societe.id }}">
+            <div class="form-group row">
+              <label
+                for="tel"
+                class="col-sm-3 text-end control-label col-form-label"
+                >NUMERO TELEPHONE</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  name="tel"
+                  class="form-control"
+                  id="tel"
+                  placeholder="Numero de Téléphone"
+                />
+              </div>
+            </div>
             <div class="form-group row">
               <label
                 for="nom"
@@ -119,22 +167,6 @@
             </select>
                 </div>
             </div> 
-            <div class="form-group row">
-              <label
-                for="tel"
-                class="col-sm-3 text-end control-label col-form-label"
-                >NUMERO TELEPHONE</label
-              >
-              <div class="col-sm-9">
-                <input
-                  type="text"
-                  name="tel"
-                  class="form-control"
-                  id="tel"
-                  placeholder="Numero de Téléphone"
-                />
-              </div>
-            </div>
             <div class="form-group row">
               <label class="col-sm-3 text-end control-label col-form-label">Mode de Paiement</label>
               <div class="col-sm-9 custom-radio">

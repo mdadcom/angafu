@@ -68,6 +68,7 @@ urlpatterns = [
     path('api/heures_d/', HeureDListCreateView.as_view(), name='heure_d-list-create'),
     path('compte/', include('django.contrib.auth.urls')),
     path('compte/',include('compte.urls')),
+    path('load-reserve/',  LoadreserveView.as_view(),name='load-reserve'),
     #path('register/user/', register_user, name='register_user'),
     #path('register/superuser/', register_superuser, name='register_superuser'),
     # path('destination/<int:destination_id>/',destination,name='destination'),

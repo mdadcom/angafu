@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import*
+from django.views import View
 from .form import*
 from django.http import HttpResponse
 from rest_framework import generics
@@ -93,7 +94,8 @@ def dest(request, destination_id):
 def affdestination(request):
     destination = Destination.objects.all()
     societe=Societe.objects.all()
-    return render(request, 'affdestination.html',{'destination':destination,'societe':societe})
+    time=Heure_d.objects.all()
+    return render(request, 'affdestination.html',{'destination':destination,'societe':societe, 'time':time})
 def adddestination(request):
     if request.method == 'POST':
         nom=request.POST.get('nom')
@@ -185,26 +187,49 @@ def addreserve(request, societe_id):
     societe = Societe.objects.get(id=societe_id)
     time=Heure_d.objects.all()
     destination=Destination.objects.all()
+    tel= request.GET.get("tel")
+    query= Reservations.objects.filter(tel=tel).first()
     if request.method=="POST":
         societe_nom = [x.nom for x in Societe.objects.all()]
         societe_ids=[Societe.objects.get(id=societe_id)]
-        
+        tel = request.POST.get('tel')
         nom = request.POST.get('nom') 
         prenom = request.POST.get('prenom')
         date=request.POST.get('date')
         time_pk=request.POST.get('time')
         time=Heure_d.objects.get(pk=time_pk)
-        tel = request.POST.get('tel')
         num_trans=request.POST.get('num_trans')
         destination_pk=request.POST.get('destination')
         destination=Destination.objects.get(pk=destination_pk)
         
-        reservation = Reservations.objects.create(nom=nom, prenom=prenom,date=date,
-                                                        time=time, tel=tel, num_trans=num_trans ,destination=destination)
+        reservation = Reservations.objects.create( tel=tel,nom=nom, prenom=prenom,date=date,
+                                                        time=time, num_trans=num_trans ,destination=destination)
         
         reservation.societe.add(Societe.objects.get(id=societe_id))
         reservation.save()
         request.session['reservation_id'] = reservation.id
+        
+        data = {
+            'societe': {
+                'pk': societe.pk,
+                
+            },
+            'reservation': None
+        }
+
+        
+        if reservation:
+            data['reservation'] = {
+                'pk': reservation.pk,
+                'tel': reservation.tel,
+                'nom': reservation.nom,
+                'prenom': reservation.prenom,
+                'date': reservation.date,
+                'time': {'time':time.time,},
+                'num_trans': reservation.num_trans,
+                'destination':{'destination': destination.nom},
+                
+            }
         return redirect('affreserve')
     return render(request, 'reservation.html',{'societe':societe})
 
@@ -701,3 +726,17 @@ class ReceiveSMSView(APIView):
     def get(self, request, *args, **kwargs):
         return Response({'status': 'error', 'message': 'Invalid request method'})
 
+
+class LoadreserveView(View):
+    def get(self, request):
+        tel = request.GET.get('tel', None)
+        reservation = get_object_or_404(Reservations, tel=tel)
+
+        data = {
+            'nom': reservation.nom,
+            'prenom': reservation.prenom,
+            'num_trans': reservation.num_trans,
+            
+        }
+        
+        return JsonResponse({'donneur': data})

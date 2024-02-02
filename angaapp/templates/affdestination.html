@@ -100,4 +100,50 @@
       </form>
   </div>
 </div>
+<div class="table-responsive">
+  <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">NOM</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for destinations in destination %}
+    <tr>
+      <td>#</td>
+      <td>{{destinations.nom}}</td>
+     
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+<div class="table-responsive">
+  <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Societe</th>
+      <th scope="col">destination</th>
+      <th scope="col">CAR</th>
+      <th scope="col">Heure</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for time in time %}
+    <tr>
+      <td>#</td>
+      <td>{{time.societe}}</td>
+      <td>{{time.destination}}</td>
+      <td>{{time.car}}</td>
+      <td>{{time.time|time:"H:i"}}</td>
+     
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
 {% endblock  %}
