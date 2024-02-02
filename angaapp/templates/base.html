@@ -462,7 +462,7 @@
                       ><span class="hide-menu">Reserver ver une Destination</span></a
                     >
                   </li>
-                  {% if user.is_superuser %}
+                  {% if user.is_superuser or user.is_vendeur%}
                   <li class="sidebar-item">
                     <a href="{% url 'adddestination' %}" class="sidebar-link"
                       ><i class="me-2 mdi mdi-call-merge"></i
