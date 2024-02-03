@@ -23,9 +23,16 @@ class Societe(models.Model):
         verbose_name_plural=('Societe')
     def __str__(self):
         return self.nom
+    
+class Kartie(models.Model):
+    destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
+    nom=models.CharField(max_length=80, blank=True)
+    def __str__(self):
+        return self.nom
+    
 class Heure_d(models.Model):
     societe = models.ForeignKey(Societe, on_delete=models.CASCADE)
-    destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
+    kartie=models.ForeignKey(Kartie, on_delete=models.CASCADE)
     car = models.CharField(max_length=10, choices=[('VIP', 'VIP'), ('Standard', 'Standard')])
     time=models.TimeField()
 class Reservations(models.Model):
