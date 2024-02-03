@@ -18,6 +18,7 @@
           <tr>
             <th scope="col">#</th>
             <th scope="col">Societe</th>
+            <th scope="col">Kartie</th>
             <th scope="col">Numero CNIB</th>
             <th scope="col">Délivrée le</th>
             <th scope="col">NOM</th>
@@ -40,6 +41,7 @@
             <td>{% for societe in reservation.societe.all %}
               {{ societe.nom }}
             {% endfor %}</td>
+            <td>{{reservation.time.kartie}}</td>
             <td>{{reservation.numero_cnib}}</td>
             <td>{{reservation.datedl_cnib}}</td>
             <td>{{reservation.nom}}</td>

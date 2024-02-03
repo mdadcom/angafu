@@ -26,6 +26,7 @@ urlpatterns = [
     path('home2/', home2, name='home2'),
     path('affdestination/', affdestination, name='affdestination'),
     path('adddestination/', adddestination, name='adddestination'),
+    path('addkartie/', addkartie, name='addkartie'),
     path('addheure/', addheure, name='addheure'),
     path('get_heures_depart/', get_heures_depart, name='get_heures_depart'),
     path('affso/>', affso, name='affso'),

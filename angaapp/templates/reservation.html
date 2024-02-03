@@ -187,6 +187,20 @@
                       </select>
                   </div>
               </div> 
+              <div class="form-group row">
+                <label 
+                class="col-sm-3 text-end control-label col-form-label" 
+                for="destination"
+                >KARTIER</label>
+                <div class="col-sm-9">
+                        <select name="kartie" id="id_kartie" class="form-control" required>
+                          <option >--SELECTION KARTIER--</option>
+                          {% for kartie in kartie %}
+                            <option value="{{kartie.id}}">{{kartie.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div> 
             <div class="form-group row">
             <label 
             class="col-sm-3 text-end control-label col-form-label" 
@@ -281,14 +295,15 @@
     </script>
     
   <script>
-    document.getElementById('id_destination').addEventListener('change', function() {
-      var destinationId = this.value;
+    document.getElementById('id_kartie').addEventListener('change', function() {
+      var kartieId = this.value;
       var societeId = document.getElementById('id_societe').value;
-      var car = document.getElementById('id_car').value; // Récupère la valeur de la car sélectionnée
+      var car = document.getElementById('id_car').value;
+      var destinationId = document.getElementById('id_destination').value; // Récupère la valeur de la destination sélectionnée
       var heuresDepartSelect = document.getElementById('id_time');
       heuresDepartSelect.innerHTML = '';
   
-      fetch('/get_heures_depart/?destination_id=' + destinationId + '&societe_id=' + societeId + '&car=' + car)
+      fetch('/get_heures_depart/?kartie_id=' + kartieId + '&societe_id=' + societeId + '&car=' + car + '&destination_id=' + destinationId)
           .then(response => response.json())
           .then(data => {
               data.forEach(heure_depart => {

@@ -32,6 +32,7 @@ class Kartie(models.Model):
     
 class Heure_d(models.Model):
     societe = models.ForeignKey(Societe, on_delete=models.CASCADE)
+    destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
     kartie=models.ForeignKey(Kartie, on_delete=models.CASCADE)
     car = models.CharField(max_length=10, choices=[('VIP', 'VIP'), ('Standard', 'Standard')])
     time=models.TimeField()

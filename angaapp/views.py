@@ -95,11 +95,19 @@ def affdestination(request):
     destination = Destination.objects.all()
     societe=Societe.objects.all()
     time=Heure_d.objects.all()
-    return render(request, 'affdestination.html',{'destination':destination,'societe':societe, 'time':time})
+    kartie=Kartie.objects.all()
+    return render(request, 'affdestination.html',{'destination':destination,'societe':societe, 'time':time,'kartie':kartie})
 def adddestination(request):
     if request.method == 'POST':
         nom=request.POST.get('nom')
         Destination.objects.create(nom=nom)
+    return redirect('affdestination')
+def addkartie(request):
+    if request.method == 'POST':
+        nom=request.POST.get('nom')
+        destination_pk=request.POST.get('destination')
+        destination=Destination.objects.get(pk=destination_pk)
+        Kartie.objects.create(nom=nom,destination=destination)
     return redirect('affdestination')
 def addheure(request):
     if request.method == 'POST':
@@ -107,17 +115,20 @@ def addheure(request):
         societe=Societe.objects.get(pk=societe_pk)
         destination_pk=request.POST.get('destination')
         destination=Destination.objects.get(pk=destination_pk)
+        kartie_pk=request.POST.get('kartie')
+        kartie=Kartie.objects.get(pk=kartie_pk)
         car = request.POST.get('car')
         time=request.POST.get('time')
-        Heure_d.objects.create(societe=societe, car=car,destination=destination,time=time)
+        Heure_d.objects.create(societe=societe, destination=destination,car=car,kartie=kartie,time=time)
     return redirect('affdestination')
 def get_heures_depart(request):
-    if request.method == 'GET' and 'destination_id' in request.GET and 'societe_id' in request.GET and 'car' in request.GET:
-        destination_id = request.GET.get('destination_id')
+    if request.method == 'GET' and 'kartie_id' in request.GET and 'societe_id' in request.GET and 'car' in request.GET and 'destination_id' in request.GET:
+        kartie_id = request.GET.get('kartie_id')
         societe_id = request.GET.get('societe_id')
         car = request.GET.get('car')
+        destination_id = request.GET.get('destination_id') # Récupère l'ID de la destination sélectionnée
         
-        heures_depart = Heure_d.objects.filter(destination_id=destination_id, societe_id=societe_id, car=car).values('id', 'time')
+        heures_depart = Heure_d.objects.filter(kartie_id=kartie_id, societe_id=societe_id, car=car, destination_id=destination_id).values('id', 'time')
         return JsonResponse(list(heures_depart), safe=False)
     else:
         return JsonResponse({'error': 'Invalid request'})
@@ -134,14 +145,17 @@ def addsociete(request):
     return redirect('affsociete')
 def reserve(request, societe_id):
     societe = get_object_or_404(Societe, id=societe_id)
-    
+    destination = Destination.objects.all()
     societe_destination_id = societe.destination.id
+    kartie=Kartie.objects.filter(destination_id=societe_destination_id)
     heures_depart_par_societe = Heure_d.objects.filter(societe_id=societe_id)
     destinations = Destination.objects.exclude(id=societe_destination_id)
     context = {
         'societe': societe,
         'heures_depart_par_societe': heures_depart_par_societe,
+        'destination':destination,
         'destinations': destinations,
+        'kartie': kartie,
         
     }
     return render(request, 'reservation.html', context)
