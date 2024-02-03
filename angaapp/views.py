@@ -193,6 +193,8 @@ def addreserve(request, societe_id):
         societe_nom = [x.nom for x in Societe.objects.all()]
         societe_ids=[Societe.objects.get(id=societe_id)]
         tel = request.POST.get('tel')
+        numero_cnib=request.POST.get('numero_cnib')
+        datedl_cnib=request.POST.get('datedl_cnib')
         nom = request.POST.get('nom') 
         prenom = request.POST.get('prenom')
         date=request.POST.get('date')
@@ -202,7 +204,7 @@ def addreserve(request, societe_id):
         destination_pk=request.POST.get('destination')
         destination=Destination.objects.get(pk=destination_pk)
         
-        reservation = Reservations.objects.create( tel=tel,nom=nom, prenom=prenom,date=date,
+        reservation = Reservations.objects.create( tel=tel,numero_cnib=numero_cnib,datedl_cnib=datedl_cnib,nom=nom, prenom=prenom,date=date,
                                                         time=time, num_trans=num_trans ,destination=destination)
         
         reservation.societe.add(Societe.objects.get(id=societe_id))
@@ -221,6 +223,8 @@ def addreserve(request, societe_id):
         if reservation:
             data['reservation'] = {
                 'pk': reservation.pk,
+                'numero_cnib': reservation.numero_cnib,
+                'datedl_cnib': reservation.datedl_cnib,
                 'tel': reservation.tel,
                 'nom': reservation.nom,
                 'prenom': reservation.prenom,

@@ -37,6 +37,8 @@ class Reservations(models.Model):
     code_reservation = models.CharField(max_length=100, unique=True, editable=False)
     societe=models.ManyToManyField(Societe,)
     tel=models.CharField(max_length=80, blank=True)
+    numero_cnib=models.CharField(max_length=60, null=True,blank=True)
+    datedl_cnib=models.CharField(max_length=60, null=True,blank=True)
     nom=models.CharField(max_length=80, blank=True)
     prenom=models.CharField(max_length=80, blank=True)
     date=models.DateField()
