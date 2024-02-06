@@ -1,207 +1,171 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="col-md-6">
-    <div class="card">
-      <form method="post" action="{% url 'adddestination'%}" class="form-horizontal">
-        {% csrf_token %}
-        <div class="card-body">
-          <h4 class="card-title">Destination</h4>
-          <div class="form-group row">
-            <label
-              for="nom"
-              class="col-sm-3 text-end control-label col-form-label"
-              >NOM</label>
-            <div class="col-sm-9">
-              <input
-                type="text"
-                name="nom"
-                class="form-control"
-                id="nom"
-                placeholder="Nom"
-                required/>
-            </div>
-          </div>
-          <div class="border-top">
-            <div class="card-body">
-              <button type="Submit" class="btn btn-primary">
-                Ajouter
-              </button>
-            </div>
-          </div>
-        </form>
-    </div>
-</div>
-
-<div class="col-md-6">
+<div class="col-md-12">
   <div class="card">
+    <form method="post" action="{% url 'adddestination'%}" class="form-horizontal">
+      {% csrf_token %}
+      <div class="card-body">
+        <h4 class="card-title">Destination</h4>
+        <div class="form-group row">
+          <label for="nom" class="col-sm-3 text-end control-label col-form-label">NOM</label>
+          <div class="col-sm-9">
+            <input type="text" name="nom" class="form-control" id="nom" placeholder="Nom" required/>
+          </div>
+        </div>
+        <div class="border-top">
+          <div class="card-body">
+            <button type="Submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
     <form method="post" action="{% url 'addkartie'%}" class="form-horizontal">
       {% csrf_token %}
       <div class="card-body">
         <h4 class="card-title">Kartie</h4>
         <div class="form-group row">
-          <label
-            for="nom"
-            class="col-sm-3 text-end control-label col-form-label"
-            >NOM</label>
+          <label for="nom" class="col-sm-3 text-end control-label col-form-label">NOM</label>
           <div class="col-sm-9">
-            <input
-              type="text"
-              name="nom"
-              class="form-control"
-              id="nom"
-              placeholder="Nom"
-              required/>
+            <input type="text" name="nom" class="form-control" id="nom" placeholder="Nom" required/>
           </div>
         </div>
         <div class="form-group row">
-          <label 
-          class="col-sm-3 text-end control-label col-form-label" 
-          for="destination"
-          >Destination</label>
+          <label class="col-sm-3 text-end control-label col-form-label" for="destination">Destination</label>
           <div class="col-sm-9">
-                  <select name="destination" class="form-control" required>
-                    {% for destination in destination %}
-                      <option value="{{destination.id}}">{{destination.nom }}</option>
-                      {% endfor %}
-                  </select>
-              </div>
-          </div> 
-        <div class="border-top">
-          <div class="card-body">
-            <button type="Submit" class="btn btn-primary">
-              Ajouter
-            </button>
+            <select name="destination" class="form-control" required>
+              {% for destination in destinations %}
+              <option value="{{destination.id}}">{{destination.nom }}</option>
+              {% endfor %}
+            </select>
           </div>
         </div>
-      </form>
-  </div>
-</div>
+        <div class="border-top">
+          <div class="card-body">
+            <button type="Submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </div>
+      </div>
+    </form>
 
-<div >
-  <div class="card">
     <form method="post" action="{% url 'addheure'%}" class="form-horizontal">
       {% csrf_token %}
       <div class="card-body">
         <h4 class="card-title">HEURE de Depart</h4>
         <div class="form-group row">
-          <label 
-          class="col-sm-3 text-end control-label col-form-label" 
-          for="societe"
-          >Sociéte</label>
+          <label class="col-sm-3 text-end control-label col-form-label" for="societe">Sociéte</label>
           <div class="col-sm-9">
-                  <select name="societe" class="form-control" required>
-                    {% for societe in societe %}
-                      <option value="{{societe.id}}">{{societe.nom }}-{{societe.destination}}</option>
-                      {% endfor %}
-                  </select>
-              </div>
-          </div> 
-          <div class="form-group row">
-            <label 
-            class="col-sm-3 text-end control-label col-form-label" 
-            for="destination"
-            >Destination</label>
-            <div class="col-sm-9">
-                    <select name="destination" class="form-control" required>
-                      {% for destination in destination %}
-                        <option value="{{destination.id}}">{{destination.nom }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div> 
-          <div class="form-group row">
-            <label 
-            class="col-sm-3 text-end control-label col-form-label" 
-            for="destination"
-            >Kartie</label>
-            <div class="col-sm-9">
-                    <select name="kartie" class="form-control" required>
-                      {% for kartie in kartie %}
-                        <option value="{{kartie.id}}">{{kartie.nom }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div> 
-            <div class="form-group row">
-              <label class="col-sm-3 text-end control-label col-form-label" for="car">CAR</label>
-              <div class="col-sm-9">
-                  <select name="car" id="id_car" class="form-control" required>
-                      <option>--SELECTION CAR--</option>
-                      <option value="VIP">VIP</option>
-                      <option value="Standard">Standard</option>
-                  </select>
-              </div>
-          </div>          
+            <select name="societe" class="form-control" required>
+              {% for societe in societes %}
+              <option value="{{societe.id}}">{{societe.nom }}-{{societe.destination}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
         <div class="form-group row">
-          <label
-            for="nom"
-            class="col-sm-3 text-end control-label col-form-label"
-            >HEURE</label>
+          <label class="col-sm-3 text-end control-label col-form-label" for="destination">Destination</label>
           <div class="col-sm-9">
-            <input
-              type="time"
-              name="time"
-              class="form-control"
-              id="nom"
-              placeholder="Nom"
-            />
+            <select name="destination" class="form-control" required>
+              {% for destination in destinations %}
+              <option value="{{destination.id}}">{{destination.nom }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 text-end control-label col-form-label" for="kartie">Kartie</label>
+          <div class="col-sm-9">
+            <select name="kartie" class="form-control" required>
+              {% for kartie in karties %}
+              <option value="{{kartie.id}}">{{kartie.nom }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 text-end control-label col-form-label" for="car">CAR</label>
+          <div class="col-sm-9">
+            <select name="car" id="id_car" class="form-control" required>
+              <option>--SELECTION CAR--</option>
+              <option value="VIP">VIP</option>
+              <option value="Standard">Standard</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-3 text-end control-label col-form-label" for="time">HEURE</label>
+          <div class="col-sm-9">
+            <input type="time" name="time" class="form-control" id="nom" placeholder="Nom"/>
           </div>
         </div>
         <div class="border-top">
           <div class="card-body">
-            <button type="Submit" class="btn btn-primary">
-              Ajouter
-            </button>
+            <button type="Submit" class="btn btn-primary">Ajouter</button>
           </div>
         </div>
-      </form>
+      </div>
+    </form>
   </div>
 </div>
-<div class="table-responsive">
-  <table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">NOM</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for destinations in destination %}
-    <tr>
-      <td>#</td>
-      <td>{{destinations.nom}}</td>
-     
-    </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">NOM</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for destinations in destination %}
+              <tr>
+                <td>#</td>
+                <td>{{destinations.nom}}</td>
+               
+              </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Societe</th>
+                <th scope="col">KARTIE</th>
+                <th scope="col">destination</th>
+                <th scope="col">CAR</th>
+                <th scope="col">Heure</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for time in time %}
+              <tr>
+                <td>#</td>
+                <td>{{time.societe}}</td>
+                <td>{{time.kartie}}</td>
+                <td>{{time.destination}}</td>
+                <td>{{time.car}}</td>
+                <td>{{time.time|time:"H:i"}}</td>
+               
+              </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
-<div class="table-responsive">
-  <table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Societe</th>
-      <th scope="col">destination</th>
-      <th scope="col">CAR</th>
-      <th scope="col">Heure</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for time in time %}
-    <tr>
-      <td>#</td>
-      <td>{{time.societe}}</td>
-      <td>{{time.destination}}</td>
-      <td>{{time.car}}</td>
-      <td>{{time.time|time:"H:i"}}</td>
-     
-    </tr>
-    {% endfor %}
-    </tbody>
-  </table>
-</div>
-</div>
+
+
+
+
 {% endblock  %}
