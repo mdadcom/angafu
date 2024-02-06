@@ -57,7 +57,7 @@
           <label class="col-sm-3 text-end control-label col-form-label" for="societe">Sociéte</label>
           <div class="col-sm-9">
             <select name="societe" class="form-control" required>
-              {% for societe in societes %}
+              {% for societe in societe %}
               <option value="{{societe.id}}">{{societe.nom }}-{{societe.destination}}</option>
               {% endfor %}
             </select>
@@ -67,7 +67,7 @@
           <label class="col-sm-3 text-end control-label col-form-label" for="destination">Destination</label>
           <div class="col-sm-9">
             <select name="destination" class="form-control" required>
-              {% for destination in destinations %}
+              {% for destination in destination %}
               <option value="{{destination.id}}">{{destination.nom }}</option>
               {% endfor %}
             </select>
@@ -77,7 +77,7 @@
           <label class="col-sm-3 text-end control-label col-form-label" for="kartie">Kartie</label>
           <div class="col-sm-9">
             <select name="kartie" class="form-control" required>
-              {% for kartie in karties %}
+              {% for kartie in kartie %}
               <option value="{{kartie.id}}">{{kartie.nom }}</option>
               {% endfor %}
             </select>
