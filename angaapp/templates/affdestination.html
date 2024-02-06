@@ -35,7 +35,7 @@
           <label class="col-sm-3 text-end control-label col-form-label" for="destination">Destination</label>
           <div class="col-sm-9">
             <select name="destination" class="form-control" required>
-              {% for destination in destinations %}
+              {% for destination in destination %}
               <option value="{{destination.id}}">{{destination.nom }}</option>
               {% endfor %}
             </select>
