@@ -97,6 +97,12 @@ def affdestination(request):
     time=Heure_d.objects.all()
     kartie=Kartie.objects.all()
     return render(request, 'affdestination.html',{'destination':destination,'societe':societe, 'time':time,'kartie':kartie})
+def affheuredp(request):
+    destination = Destination.objects.all()
+    societe=Societe.objects.all()
+    time=Heure_d.objects.all()
+    kartie=Kartie.objects.all()
+    return render(request, 'affheuredp.html',{'destination':destination,'societe':societe, 'time':time,'kartie':kartie})
 def adddestination(request):
     if request.method == 'POST':
         nom=request.POST.get('nom')
