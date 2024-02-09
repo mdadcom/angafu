@@ -2,64 +2,96 @@
 
 {% block content %}
 
-<h1>Destination Et Heure de Depart</h1>
-<div class="card">
-    <div class="card-body">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="table-responsive">
-            <h3>Destination</h3>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">NOM</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for destinations in destination %}
-                <tr>
-                  <td>#</td>
-                  <td>{{destinations.nom}}</td>
-                 
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-          </div>
+<div class="row">
+  <!-- Première moitié du card -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h3>Destination</h3>
+        <div class="table-responsive">
+          <table class="table">
+            <!-- Entêtes de colonnes -->
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">NOM</th>
+              </tr>
+            </thead>
+            <!-- Corps du tableau -->
+            <tbody>
+              {% for destination in destination_page %}
+              <tr>
+                <td>#</td>
+                <td>{{ destination.nom }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-        <div class="col-md-6">
-          <h3>Heure de Depart</h3>
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Societe</th>
-                  <th scope="col">KARTIE</th>
-                  <th scope="col">destination</th>
-                  <th scope="col">CAR</th>
-                  <th scope="col">Heure</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for time in time %}
-                <tr>
-                  <td>#</td>
-                  <td>{{time.societe}}</td>
-                  <td>{{time.kartie}}</td>
-                  <td>{{time.destination}}</td>
-                  <td>{{time.car}}</td>
-                  <td>{{time.time|time:"H:i"}}</td>
-                 
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-          </div>
+        <!-- Pagination -->
+        <div class="pagination">
+          {% if destination_page.has_previous %}
+          <a href="?destination_page=1">Première</a>
+          <a href="?destination_page={{ destination_page.previous_page_number }}">Précédent</a>
+          {% endif %}
+          <span class="current">Page {{ destination_page.number }} de {{ destination_page.paginator.num_pages }}.</span>
+          {% if destination_page.has_next %}
+          <a href="?destination_page={{ destination_page.next_page_number }}">Suivant</a>
+          <a href="?destination_page={{ destination_page.paginator.num_pages }}">Dernière</a>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
 
-{% endblock  %}
+  <!-- Deuxième moitié du card -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h3>Heure de Depart</h3>
+        <div class="table-responsive">
+          <table class="table">
+            <!-- Entêtes de colonnes -->
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Societe</th>
+                <th scope="col">KARTIE</th>
+                <th scope="col">Destination</th>
+                <th scope="col">CAR</th>
+                <th scope="col">Heure</th>
+              </tr>
+            </thead>
+            <!-- Corps du tableau -->
+            <tbody>
+              {% for time in time_page %}
+              <tr>
+                <td>#</td>
+                <td>{{ time.societe }}</td>
+                <td>{{ time.kartie }}</td>
+                <td>{{ time.destination }}</td>
+                <td>{{ time.car }}</td>
+                <td>{{ time.time|time:"H:i" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination -->
+        <div class="pagination">
+          {% if time_page.has_previous %}
+          <a href="?time_page=1">Première</a>
+          <a href="?time_page={{ time_page.previous_page_number }}">Précédent</a>
+          {% endif %}
+          <span class="current">Page {{ time_page.number }} de {{ time_page.paginator.num_pages }}.</span>
+          {% if time_page.has_next %}
+          <a href="?time_page={{ time_page.next_page_number }}">Suivant</a>
+          <a href="?time_page={{ time_page.paginator.num_pages }}">Dernière</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

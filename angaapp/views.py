@@ -97,12 +97,37 @@ def affdestination(request):
     time=Heure_d.objects.all()
     kartie=Kartie.objects.all()
     return render(request, 'affdestination.html',{'destination':destination,'societe':societe, 'time':time,'kartie':kartie})
+from django.core.paginator import Paginator
+
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from .models import Destination, Societe, Heure_d, Kartie
+
 def affheuredp(request):
-    destination = Destination.objects.all()
-    societe=Societe.objects.all()
-    time=Heure_d.objects.all()
-    kartie=Kartie.objects.all()
-    return render(request, 'affheuredp.html',{'destination':destination,'societe':societe, 'time':time,'kartie':kartie})
+    destination_list = Destination.objects.all()
+    societe_list = Societe.objects.all()
+    time_list = Heure_d.objects.all()
+    kartie_list = Kartie.objects.all()
+
+    # Pagination pour les destinations
+    destination_paginator = Paginator(destination_list, 10)  # 10 éléments par page
+    destination_page_number = request.GET.get('destination_page')
+    destination_page_obj = destination_paginator.get_page(destination_page_number)
+
+    # Pagination pour les heures de départ
+    time_paginator = Paginator(time_list, 8)  # 10 éléments par page
+    time_page_number = request.GET.get('time_page')
+    time_page_obj = time_paginator.get_page(time_page_number)
+
+    return render(request, 'affheuredp.html', {
+        'destination_page': destination_page_obj,
+        'time_page': time_page_obj,
+        'societe_list': societe_list,
+        'kartie_list': kartie_list
+    })
+
+
+
 def adddestination(request):
     if request.method == 'POST':
         nom=request.POST.get('nom')
