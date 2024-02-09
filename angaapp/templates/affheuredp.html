@@ -32,12 +32,12 @@
         <div class="pagination">
           {% if destination_page.has_previous %}
           <a href="?destination_page=1">Première</a>
-          <a href="?destination_page={{ destination_page.previous_page_number }}">Précédent</a>
+          <a href="?destination_page={{ destination_page.previous_page_number }}" class="btn btn-outline-info">Précédent</a>
           {% endif %}
           <span class="current">Page {{ destination_page.number }} de {{ destination_page.paginator.num_pages }}.</span>
           {% if destination_page.has_next %}
-          <a href="?destination_page={{ destination_page.next_page_number }}">Suivant</a>
-          <a href="?destination_page={{ destination_page.paginator.num_pages }}">Dernière</a>
+          <a href="?destination_page={{ destination_page.next_page_number }}" class="btn btn-outline-info">Suivant</a>
+          <a href="?destination_page={{ destination_page.paginator.num_pages }}" class="btn btn-outline-info">Dernière</a>
           {% endif %}
         </div>
       </div>
@@ -81,12 +81,12 @@
         <div class="pagination">
           {% if time_page.has_previous %}
           <a href="?time_page=1">Première</a>
-          <a href="?time_page={{ time_page.previous_page_number }}">Précédent</a>
+          <a href="?time_page={{ time_page.previous_page_number }}" class="btn btn-outline-primary">Précédent</a>
           {% endif %}
           <span class="current">Page {{ time_page.number }} de {{ time_page.paginator.num_pages }}.</span>
           {% if time_page.has_next %}
-          <a href="?time_page={{ time_page.next_page_number }}">Suivant</a>
-          <a href="?time_page={{ time_page.paginator.num_pages }}">Dernière</a>
+          <a href="?time_page={{ time_page.next_page_number }}" class="btn btn-outline-primary">Suivant</a>
+          <a href="?time_page={{ time_page.paginator.num_pages }}" class="btn btn-outline-primary">Dernière</a>
           {% endif %}
         </div>
       </div>
