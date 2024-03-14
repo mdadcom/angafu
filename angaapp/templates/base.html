@@ -118,7 +118,7 @@
             <!-- ============================================================== -->
             <!-- toggle and nav items -->
             <!-- ============================================================== -->
-           <!-- <ul class="navbar-nav float-start me-auto">
+            <ul class="navbar-nav float-start me-auto">
               <li class="nav-item d-none d-lg-block">
                 <a
                   class="nav-link sidebartoggler waves-effect waves-light"
@@ -128,7 +128,7 @@
                 ></a>
               </li>
            
-              <li class="nav-item dropdown">
+              <!--<li class="nav-item dropdown">
                 <a
                   class="nav-link dropdown-toggle"
                   href="#"
@@ -315,54 +315,7 @@
               <!-- ============================================================== -->
               <!-- User profile and search -->
               <!-- ============================================================== -->
-              <li class="nav-item dropdown">
-                <a
-                  class="
-                    nav-link
-                    dropdown-toggle
-                    text-muted
-                    waves-effect waves-dark
-                    pro-pic
-                  "
-                  href="#"
-                  id="navbarDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <img
-                    src="{% static 'assets/images/users/1.jpg' %}"
-                    alt="user"
-                    class="rounded-circle"
-                    width="31"
-                  />
-                </a>
-                <ul
-                  class="dropdown-menu dropdown-menu-end user-dd animated"
-                  aria-labelledby="navbarDropdown"
-                >
-                  <a class="dropdown-item" href="javascript:void(0)"
-                    ><i class="mdi mdi-account me-1 ms-1"></i> {{ user.username }}</a
-                  >
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="javascript:void(0)"
-                    ><i class="mdi mdi-settings me-1 ms-1"></i> Account
-                    Setting</a
-                  >
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'deconnecte' %}"
-                    ><i class="fa fa-power-off me-1 ms-1"></i> Logout</a
-                  >
-                  <div class="dropdown-divider"></div>
-                  <div class="ps-4 p-10">
-                    <a
-                      href="javascript:void(0)"
-                      class="btn btn-sm btn-success btn-rounded text-white"
-                      >View Profile</a
-                    >
-                  </div>
-                </ul>
-              </li>
+              
               <!-- ============================================================== -->
               <!-- User profile and search -->
               <!-- ============================================================== -->
@@ -393,69 +346,22 @@
                   ><span class="hide-menu">Accueil</span></a
                 >
               </li>
+              
               <li class="sidebar-item">
                 <a
                   class="sidebar-link has-arrow waves-effect waves-dark"
                   href="javascript:void(0)"
                   aria-expanded="false"
-                  ><i class="mdi mdi-account-key"></i
-                  ><span class="hide-menu">Utilisateur </span></a
+                  ><i class="me-2 mdi mdi-table-column-plus-before"></i
+                  ><span class="hide-menu">Config</span></a
                 >
                 <ul aria-expanded="false" class="collapse first-level">
-                  
-                  {% if user.is_authenticated %}
-        {% if user.is_superuser %}
-            <li class="sidebar-item">
-                <a href="{% url 'deconnecte' %}" class="sidebar-link">
-                    <i class="mdi mdi-all-inclusive"></i>
-                    <span class="hide-menu">Se Deconnecte </span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="{% url 'connecte' %}" class="sidebar-link">
-                    <i class="mdi mdi-all-inclusive"></i>
-                    <span class="hide-menu">Se Connecte </span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="{% url 'register_user' %}" class="sidebar-link">
-                    <i class="mdi mdi-all-inclusive"></i>
-                    <span class="hide-menu"> Creer un Utilisateur </span>
-                </a>
-            </li>
-        {% else %}
-            <li class="sidebar-item">
-                <a href="{% url 'deconnecte' %}" class="sidebar-link">
-                    <i class="mdi mdi-all-inclusive"></i>
-                    <span class="hide-menu">Se Deconnecte </span>
-                </a>
-            </li>
-        {% endif %}
-    {% else %}
-        <li class="sidebar-item">
-            <a href="{% url 'connecte' %}" class="sidebar-link">
-                <i class="mdi mdi-all-inclusive"></i>
-                <span class="hide-menu">Se Connecte </span>
-            </a>
-        </li>
-        <li class="sidebar-item">
-            <a href="{% url 'register_user' %}" class="sidebar-link">
-                <i class="mdi mdi-all-inclusive"></i>
-                <span class="hide-menu"> Creer un Utilisateur </span>
-            </a>
-        </li>
-    {% endif %}
-</ul>
-              </li>
-              <li class="sidebar-item">
-                <a
-                  class="sidebar-link has-arrow waves-effect waves-dark"
-                  href="javascript:void(0)"
-                  aria-expanded="false"
-                  ><i class="me-2 mdi mdi-apps"></i
-                  ><span class="hide-menu">Menu </span></a
-                >
-                <ul aria-expanded="false" class="collapse first-level">
+                  <li class="sidebar-item">
+                    <a href="{% url 'affdestination' %}" class="sidebar-link"
+                      ><i class="me-2 mdi mdi-call-merge"></i
+                      ><span class="hide-menu">Ajouter </span></a
+                    >
+                  </li>
                   <li class="sidebar-item">
                     <a href="{% url 'home2' %}" class="sidebar-link"
                       ><i class="me-2 mdi mdi-call-split"></i
@@ -463,24 +369,12 @@
                     >
                   </li>
                   {% if user.is_superuser or user.is_vendeur%}
-                  <li class="sidebar-item">
-                    <a href="{% url 'affdestination' %}" class="sidebar-link"
-                      ><i class="me-2 mdi mdi-call-merge"></i
-                      ><span class="hide-menu">Ajouter une Destination </span></a
-                    >
-                  </li>
+                
                   <li class="sidebar-item">
                     <a href="{% url 'affheuredp' %}" class="sidebar-link"
-                      ><i class="me-2 mdi mdi-call-merge"></i
+                      ><i class="me-2 mdi mdi-scale"></i
                       ><span class="hide-menu">Destination et Heure </span></a
                     >
-                  </li>
-                  <li class="sidebar-item">
-                    <a href="{% url 'affso' %}" class="sidebar-link"
-                      ><i class="me-2 mdi mdi-shape-rectangle-plus"></i
-                      ><span class="hide-menu">Ajouter une Societe </span></a
-                    >
-                  </li>
                   {% endif %}
                   <li class="sidebar-item">
                     <a href="{% url 'affreserve' %}" class="sidebar-link"
@@ -495,7 +389,12 @@
                       ><span class="hide-menu">Reservations Confirmer </span></a
                     >
                   </li>
-                  
+                  <li class="sidebar-item">
+                    <a href="{% url 'confirmt' %}" class="sidebar-link"
+                      ><i class="me-2 mdi mdi-pocket"></i
+                      ><span class="hide-menu">Confirmer </span></a
+                    >
+                  </li>
                   <li class="sidebar-item">
                     <a href="{% url 'success' %}" class="sidebar-link"
                       ><i class="fas fa-check-circle text-success"></i
@@ -509,6 +408,25 @@
                     >
                   </li>
                   
+                </ul>
+              </li>
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link has-arrow waves-effect waves-dark"
+                  href="javascript:void(0)"
+                  aria-expanded="false"
+                  ><i class="me-2 mdi mdi-settings"></i
+                  ><span class="hide-menu">Paramètre </span></a
+                >
+                <ul aria-expanded="false" class="collapse first-level">
+                  {% if user.is_superuser or user.is_vendeur%}
+                  <li class="sidebar-item">
+                    <a href="{% url 'affso' %}" class="sidebar-link"
+                      ><i class="me-2 mdi mdi-shape-rectangle-plus"></i
+                      ><span class="hide-menu">Ajouter une Societe </span></a
+                    >
+                  </li>
+                  {% endif %}
                 </ul>
               </li>
             </ul>
@@ -541,6 +459,64 @@
                     {% endif %}
                     <li class="breadcrumb-item active" aria-current="page">
                       ANGAFU
+                    </li>
+                    <li class="breadcrumb-item " aria-current="page" style="margin-bottom: -5px;">
+                      <a
+                        class="
+                          nav-link
+                          dropdown-toggle
+                          text-muted
+                          waves-effect waves-dark
+                          pro-pic
+                        "
+                        href="#"
+                        id="navbarDropdown"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <img
+                          src="{% static 'assets/images/users/1.jpg' %}"
+                          alt="user"
+                          class="rounded-circle"
+                          width="31"
+                        />
+                      </a>
+                      <ul
+                        class="dropdown-menu dropdown-menu-end user-dd animated"
+                        aria-labelledby="navbarDropdown"
+                      >
+                        <a class="dropdown-item" href="javascript:void(0)"
+                          ><i class="mdi mdi-account me-1 ms-1"></i> {{ user.username }}</a
+                        >
+                        <!--<div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:void(0)"
+                          ><i class="mdi mdi-settings me-1 ms-1"></i> Account
+                          Setting</a
+                        >-->
+                        {% if user.is_superuser %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'register_user' %}"
+                          ><i class="mdi mdi-account-key"></i> Creer un Utilisateur </a
+                        >
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'liste_utilisateurs' %}"
+                          ><i class="mdi mdi-account-key"></i> Liste Utilisateurs </a
+                        >
+                        {% endif %}
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'deconnecte' %}"
+                          ><i class="fa fa-power-off me-1 ms-1"></i> Se Deconnecte</a
+                        >
+                        <!--<div class="dropdown-divider"></div>
+                        <div class="ps-4 p-10">
+                          <a
+                            href="javascript:void(0)"
+                            class="btn btn-sm btn-success btn-rounded text-white"
+                            >View Profile</a
+                          >
+                        </div>-->
+                      </ul>
                     </li>
                   </ol>
                 </nav>

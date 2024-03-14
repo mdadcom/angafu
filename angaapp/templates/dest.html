@@ -28,10 +28,10 @@
                             <span class="text-muted">
                                 <a href="{% url 'reserve' societe.id %}" class="btn btn-outline-primary">Faire une reservation</a><br><br>
                                 {% if request.user.is_superuser %}
-                                <a href="{% url 'deleteso' societe.id %}" class="btn btn-outline-danger">
+                                <a href="{% url 'deleteso' societe.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Supprimer cet élément ?')" class="btn btn-outline-danger">
                                     <i class="me-2 mdi mdi-delete"></i>
                                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <a href="{% url 'affeditso' societe.id %}" class="btn btn-outline-info">
+                                <a href="{% url 'affeditso' societe.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Modifier cet élément ?')" class="btn btn-outline-info">
                                     <i class="me-2 mdi mdi-grease-pencil"></i>
                                 </a><br><br>
                             {% endif %}

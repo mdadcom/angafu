@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 
 <style>
@@ -27,16 +27,45 @@
 </style>
 
   <h1>Liste des Utilisateurs</h1>
-  <ul>
+  <div class="row el-element-overlay">
     {% for utilisateur in utilisateurs %}
-  <li>
-    {{ utilisateur.username }} {{ utilisateur.email}}
-    <a href="{% url 'detail_utilisateur' utilisateur.pk %}">Détails</a>
-    <a href="{% url 'editer_utilisateur' utilisateur.pk %}">Éditer</a>
-    <a href="{% url 'supprimer_utilisateur' utilisateur.pk %}">Supprimer</a>
-  </li>
-{% endfor %}
-
-  </ul>
-  <a href="{% url 'register_user' %}">Ajouter un Utilisateur</a>
+        <div class="col-md-3">
+            <div class="card"> 
+                <div class="el-card-item">
+                    <div class="el-card-avatar el-overlay-1">
+                        {% if societe.img %}
+                            <img class="card-img-top" src="{% static 'assets/images/users/1.jpg' %}" alt="Card image cap">
+                        {% endif %}
+                        <div class="el-overlay">
+                            <ul class="list-style-none el-info">
+                                <li class="el-item"></li>
+                                <li class="el-item">
+                                    {% if societe.img %}
+                                        <img class="card-img-top" src="{% static 'assets/images/users/1.jpg' %}" alt="Card image cap">
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="el-card-content">
+                        <h4 class="mb-0">{{ utilisateur.username }}</h4>
+                        <span class="text-muted">{{ utilisateur.email}}</span><br>
+                        <span class="text-muted">
+                            <a href="{% url 'detail_utilisateur' utilisateur.pk %}" class="btn btn-outline-primary">Détails</a><br><br>
+                            <a href="{% url 'register_user' %}" class="btn btn-outline-primary">Ajouter un Utilisateur</a><br><br>
+                            {% if request.user.is_superuser %}
+                            <a href="{% url 'supprimer_utilisateur' utilisateur.pk %}" onclick="return confirm('Êtes-vous sûr de vouloir Supprimer cet élément ?')" class="btn btn-outline-danger">
+                                <i class="me-2 mdi mdi-delete"></i>
+                            </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="{% url 'editer_utilisateur' utilisateur.pk %}" onclick="return confirm('Êtes-vous sûr de vouloir Modifier cet élément ?')" class="btn btn-outline-info">
+                                <i class="me-2 mdi mdi-grease-pencil"></i>
+                            </a><br><br>
+                        {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
 {% endblock %}

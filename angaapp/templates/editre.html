@@ -1,72 +1,46 @@
 {% extends 'base.html' %}
-{% load widget_tweaks %}
+{% load static %}
 {% block content %}
-<div class="col-md-6">
+<style>
+  .custom-radio input[type="radio"] {
+      display: none; /* Masquer le bouton radio par défaut */
+  }
+
+  .custom-radio label {
+      cursor: pointer;
+  }
+
+  .custom-radio label img {
+      max-width: 6rem;
+      max-height: 3rem;
+      border-radius: 20%;
+      border: 1px solid #ccc; /* Ajouter une bordure pour un style de bouton */
+      padding: 2px; /* Ajouter un peu d'espace autour de l'image */
+  }
+
+  .custom-radio input[type="radio"]:checked + label img {
+      border: 1px solid #007bff; /* Changer le style de la bordure lorsque le bouton est sélectionné */
+  }
+</style>
+
+<div class="col-md-12">
       <div class="card">
         <form method="post" action="{% url 'updatere' reservation.id %}" class="form-horizontal">
           {% csrf_token %}
           <div class="card-body">
             <h4 class="card-title">Reservation</h4>
             <div class="form-group row">
-              <label
-                for="nom"
-                class="col-sm-3 text-end control-label col-form-label"
-                >Societe</label>
-              <div class="col-sm-9">
-                {% render_field form.societe class="form-control" %}
-              </div>
-            </div>
-            <div class="form-group row">
-              <label
-                for="nom"
-                class="col-sm-3 text-end control-label col-form-label"
-                >NOM</label>
-              <div class="col-sm-9">
-                {% render_field form.nom class="form-control" %}
-              </div>
-            </div>
-            <div class="form-group row">
-              <label
-                for="lname"
-                class="col-sm-3 text-end control-label col-form-label"
-                >PRENOM</label
-              >
-              <div class="col-sm-9">
-                {% render_field form.prenom class="form-control" %}
-              </div>
-            </div>
-            <div class="form-group row">
-              <label
-                for="date"
-                class="col-sm-3 text-end control-label col-form-label"
-                >DATE DE DEPART</label
-              >
-              <div class="col-sm-9">
-                {% render_field form.date class="form-control" %}
-              </div>
-            </div>
-            <div class="form-group row">
-            <label 
-            class="col-sm-3 text-end control-label col-form-label" 
-            for="time"
-            >HEURE DE DEPART</label>
-            <div class="col-sm-9">
-                   
-              {% render_field form.time type="time" class="form-control" %}
-                      
-                  
-                </div>
-            </div> 
-            <div class="form-group row">
               <label 
               class="col-sm-3 text-end control-label col-form-label" 
               for="destination"
-              >DESTINATION</label>
+              >Societe</label>
               <div class="col-sm-9">
-                      
-                        {% render_field form.destination class="form-control" %}
-                         
-                      </select>
+                <select name="societe" id="id_societe" class="form-control" required>
+                  <option>--SELECTION Societe--</option>
+                  {% for societe in societes %}
+                      <option value="{{ societe.id }}" {% if societe.id == reservation.societe.id %}selected{% endif %}>{{ societe.nom }} - {{ societe.ville }}</option>
+                  {% endfor %}
+                </select>
                   </div>
               </div> 
             <div class="form-group row">
@@ -76,19 +50,176 @@
                 >NUMERO TELEPHONE</label
               >
               <div class="col-sm-9">
-                {% render_field form.tel class="form-control" %}
+                <input
+                  type="text"
+                  name="tel"
+                  class="form-control"
+                  id="tel"
+                  value="{{reservation.tel}}"
+                  placeholder="Numero de Téléphone"
+                />
               </div>
             </div>
             <div class="form-group row">
               <label
-                for="num_trans"
+                for="tel"
                 class="col-sm-3 text-end control-label col-form-label"
-                >NUMERO DE TRANSFERE</label
+                >NUMERO CNIB</label
               >
               <div class="col-sm-9">
-                {% render_field form.num_trans class="form-control" %}
+                <input
+                  type="text"
+                  name="numero_cnib"
+                  class="form-control"
+                  id="#"
+                  value="{{reservation.numero_cnib}}"
+                  placeholder="Numero CNIB"
+                />
               </div>
             </div>
+            <div class="form-group row">
+              <label
+                for="datedl_cnib"
+                class="col-sm-3 text-end control-label col-form-label"
+                >Délivrée le</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  name="datedl_cnib"
+                  class="form-control"
+                  id="#"
+                  value="{{reservation.datedl_cnib}}"
+                  placeholder=""
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                for="nom"
+                class="col-sm-3 text-end control-label col-form-label"
+                >NOM</label>
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  name="nom"
+                  class="form-control"
+                  id="nom"
+                  value="{{reservation.nom}}"
+                  placeholder="Nom"
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                for="lname"
+                class="col-sm-3 text-end control-label col-form-label"
+                >PRENOM</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="text"
+                  name="prenom"
+                  class="form-control"
+                  id="prenom"
+                  value="{{reservation.prenom}}"
+                  placeholder="Prenom"
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                for="date"
+                class="col-sm-3 text-end control-label col-form-label"
+                >DATE DE DEPART</label
+              >
+              <div class="col-sm-9">
+                <input
+                  type="date"
+                  name="date"
+                  class="form-control"
+                  id="date"
+                  value="{{reservation.date}}"
+                  placeholder="Prenom"
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 text-end control-label col-form-label" for="car">CAR</label>
+              <div class="col-sm-9">
+                  <select name="car" id="id_car" class="form-control" required>
+                      <option>--SELECTION CAR--</option>
+                      <option value="VIP">VIP</option>
+                      <option value="Standard">Standard</option>
+                  </select>
+              </div>
+          </div>          
+            <div class="form-group row">
+              <label 
+              class="col-sm-3 text-end control-label col-form-label" 
+              for="destination"
+              >LIGNE</label>
+              <div class="col-sm-9">
+                      <select name="ligne" id="id_ligne" class="form-control" required>
+                        <option >--SELECTION LIGNE--</option>
+                        {% for ligne in lignes %}
+                          <option value="{{ligne.id}}">{{ligne.villedp }}-{{ligne.villearv}}</option>
+                          {% endfor %}
+                      </select>
+                  </div>
+              </div> 
+              <div class="form-group row">
+                <label 
+                class="col-sm-3 text-end control-label col-form-label" 
+                for="destination"
+                >QUARTIER</label>
+                <div class="col-sm-9">
+                  <select name="quartie" id="id_quartie" class="form-control" required>
+                    <option value="">--SELECTION QUARTIER--</option>
+                    {% for q in quartie %}
+                        <option value="{{ q.id }}">{{ q.nom }}</option>
+                    {% endfor %}
+                </select>               
+                    </div>
+                </div> 
+            <div class="form-group row">
+            <label 
+            class="col-sm-3 text-end control-label col-form-label" 
+            for="time"
+            >HEURE DE DEPART</label>
+            <div class="col-sm-9">
+              <select name="time" id="id_time" class="form-control" required>
+                <option>--SELECTION HEURE--</option>
+                {% for time in times %}
+                <option value="{{ time.id }}">{{ time.time }}</option>
+                {% endfor %}
+            </select>                                  
+                </div>
+            </div> 
+            <div class="form-group row">
+              <label class="col-sm-3 text-end control-label col-form-label">Mode de Paiement</label>
+              <div class="col-sm-9 custom-radio">
+                  
+                      <input class="form-check-input" type="radio" name="mode_paiement" value="orange_money" id="id_orange_money">
+                      <label class="form-check-label" for="id_orange_money">
+                          <img src="{% static 'assets/images/orange-money.jpg' %}" alt="Orange Money">
+                      </label>
+                  
+                      <input class="form-check-input" type="radio" name="mode_paiement" value="moov_money" id="id_moov_money">
+                      <label class="form-check-label" for="id_moov_money">
+                          <img src="{% static 'assets/images/moov.png' %}" alt="Moov Money">
+                      </label>
+                  
+              </div>
+          </div>
+          <div class="form-group row">
+            <label for="num_trans" class="col-sm-3 text-end control-label col-form-label">NUMERO DE TRANSFERT</label>
+            <div class="col-sm-9">
+                <input type="text" name="num_trans" class="form-control" id="num_trans" value="{{reservation.num_trans}}" placeholder="Numero de transfert" />
+                <div id="num_trans_error" style="color: red; display: none;"></div> <!-- Message d'erreur masqué par défaut -->
+            </div>
+        </div>
+        
           <div class="border-top">
             <div class="card-body">
               <button type="Submit" class="btn btn-primary">
@@ -99,4 +230,123 @@
         </form>
       </div>
     </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("id_societe").addEventListener("change", updateDropdown);
+    });
+    
+    function updateDropdown() {
+        var societeId = document.getElementById("id_societe").value;
+    
+        fetch(`/get_time/?societe_id=${societeId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Mise à jour du sélecteur de lignes
+                var ligneSelect = document.getElementById("id_ligne");
+                ligneSelect.innerHTML = '';
+                data.lignes.forEach(ligne => {
+                    var option = document.createElement("option");
+                    option.value = ligne.id;
+                    option.textContent = ligne.villedp + ' - ' + ligne.villearv;
+                    ligneSelect.appendChild(option);
+                });
+    
+                // Mise à jour du sélecteur de quartiers
+                var quartieSelect = document.getElementById("id_quartie");
+                quartieSelect.innerHTML = '';
+                data.quartiers.forEach(quartie => {
+                    var option = document.createElement("option");
+                    option.value = quartie.id;
+                    option.textContent = quartie.nom;
+                    quartieSelect.appendChild(option);
+                });
+    
+                // Mise à jour du sélecteur de temps
+                var timeSelect = document.getElementById("id_time");
+                timeSelect.innerHTML = '';
+                data.times.forEach(time => {
+                    var option = document.createElement("option");
+                    option.value = time.id;
+                    option.textContent = time.time;
+                    timeSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Erreur lors de la mise à jour des options :", error));
+    }
+    
+  </script>
+  
+    
+
+    <script>
+      // Sélectionnez l'élément d'entrée
+      var numTransInput = document.getElementById('num_trans');
+    
+      // Ajoutez un gestionnaire d'événements pour l'événement de modification (changement de contenu) de l'entrée
+      numTransInput.addEventListener('input', function() {
+          // Obtenez la valeur actuelle de l'entrée
+          var inputValue = numTransInput.value;
+    
+          // Vérifiez si la valeur ne commence pas déjà par '+226'
+          if (!inputValue.startsWith('+226')) {
+              // Si ce n'est pas le cas, ajoutez '+226' au début
+              numTransInput.value = '+226' + inputValue;
+          }
+      });
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('reservationform'); 
+    
+        form.addEventListener('submit', function(event) {
+            var modePaiement = document.querySelector('input[name="mode_paiement"]:checked').value;
+            var numTrans = document.getElementById('num_trans').value;
+    
+            var errorMessage = document.getElementById('error_message');
+    
+            // Réinitialiser le message d'erreur
+            errorMessage.textContent = '';
+    
+            if (modePaiement === 'orange_money') {
+                if (!numTrans.startsWith('+22676') && !numTrans.startsWith('+22677') && !numTrans.startsWith('+22675') && !numTrans.startsWith('+22674') && !numTrans.startsWith('+22666') && !numTrans.startsWith('+22667') && !numTrans.startsWith('+22665') && !numTrans.startsWith('+22664') && !numTrans.startsWith('+22606') && !numTrans.startsWith('+22607') && !numTrans.startsWith('+22605') && !numTrans.startsWith('+22604') && !numTrans.startsWith('+22654') && !numTrans.startsWith('+22655') && !numTrans.startsWith('+22656') && !numTrans.startsWith('+22657')) {
+                    errorMessage.textContent = "Votre mode de paiement ne correspond pas au numéro de transfert que vous avez donné.";
+                    event.preventDefault(); // Empêche la soumission du formulaire
+                }
+            } else if (modePaiement === 'moov_money') {
+                if (!numTrans.startsWith('+22670') && !numTrans.startsWith('+22671') && !numTrans.startsWith('+22672') && !numTrans.startsWith('+22673') && !numTrans.startsWith('+22660') && !numTrans.startsWith('+22661') && !numTrans.startsWith('+22662') && !numTrans.startsWith('+22663') && !numTrans.startsWith('+22601') && !numTrans.startsWith('+22602') && !numTrans.startsWith('+22603') && !numTrans.startsWith('+22600') && !numTrans.startsWith('+22653') && !numTrans.startsWith('+22652') && !numTrans.startsWith('+22651') && !numTrans.startsWith('+22650')) {
+                    errorMessage.textContent = "Votre mode de paiement ne correspond pas au numéro de transfert que vous avez donné.";
+                    event.preventDefault(); // Empêche la soumission du formulaire
+                }
+            }
+        });
+    });
+    </script>  
+  
+  <script>
+    document.getElementById('reservationform').addEventListener('submit', function(event) {
+      var modePaiementInputs = document.querySelectorAll('input[name="mode_paiement"]');
+      var modePaiementSelected = false;
+  
+      // Vérifie si un mode de paiement est sélectionné
+      modePaiementInputs.forEach(function(input) {
+          if (input.checked) {
+              modePaiementSelected = true;
+          }
+      });
+  
+      // Si aucun mode de paiement n'est sélectionné, affiche un message d'erreur
+      if (!modePaiementSelected) {
+          event.preventDefault(); // Empêche la soumission du formulaire
+  
+          var numTransInput = document.getElementById('num_trans');
+          numTransInput.focus(); // Place le focus sur le champ de saisie du numéro de transfert
+          numTransInput.style.borderColor = 'red'; // Change la couleur du bord du champ
+          numTransInput.placeholder = 'Veuillez sélectionner un mode de paiement'; // Affiche le message d'erreur dans le champ
+      }
+  
+  
+  });
+  
+  </script>
 {% endblock  %}

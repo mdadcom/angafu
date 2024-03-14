@@ -35,7 +35,7 @@
         </thead>
         <tbody>
             
-            {% for reservation in lis_reserver %}
+            {% for reservation in page_obj %}
           <tr>
             <th scope="row">{{reservation.code_reservation}}</th>
             <td>{% for societe in reservation.societe.all %}
@@ -59,16 +59,16 @@
               </td>
               {% else %}
                   <td><i class="far fa-check-circle"></i></td>
-                  <td><a href="{% url 'affconfirme' reservation.id %}" class="btn-btngreen"> Confirme</a></td>
+                  <td><a href="{% url 'confirme_reservation' reservation.id %}" class="btn-btngreen"> Confirme</a></td>
               {% endif %}
 
             {% if request.user.is_superuser or user.is_admin or user.is_vendeur %}
             <td>
               
-              <a href="{% url 'affeditre' reservation.id %}" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
+              <a href="{% url 'affeditre' reservation.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Modifier cet élément ?')" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
             </td>
             <td>
-              <a href="{% url 'deletere' reservation.id %}" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>
+              <a href="{% url 'deletere' reservation.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Supprimer cet élément ?')" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>
             </td>
             {% endif %}
           </tr>
@@ -76,8 +76,26 @@
         </tbody>
       </table>
     </div>
+    <div class="pagination">
+      <span class="step-links">
+          {% if page_obj.has_previous %}
+              <a href="?page=1">&laquo; Première</a>
+              <a href="?page={{ page_obj.previous_page_number }}">Précédente</a>
+          {% endif %}
+    
+          <span class="current">
+              Page {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+          </span>
+    
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">Suivante</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}">Dernière &raquo;</a>
+          {% endif %}
+      </span>
+    </div>  
     </div>
 </div>
-</div>    
+</div>
+  
 {% endblock  %}
     

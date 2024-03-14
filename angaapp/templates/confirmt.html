@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-12">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title mb-0">Liste des Reservations confirmer</h5>
+        </div>
+        <div class="search-form">
+            <form method="get">
+                <input type="text" name="query" class="form-control" value="{{ query }}" placeholder="Rechercher...">
+                <button type="submit" class="btn btn-outline-primary">Rechercher</button>
+            </form>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+          <thead>
+            <tr>
+              
+              <th scope="col">Societe</th>
+              <th scope="col">Kartie</th>
+              <th scope="col">NOM</th>
+              <th scope="col">PRENOM</th>
+              <th scope="col">DATE DEPART</th>
+              <th scope="col">CAR</th>
+              <th scope="col">HEURE</th>
+              <th scope="col">DESTINATION</th>
+              <th scope="col">NUMERO TELEPHONE</th>
+              <th scope="col">NUMERO TRANSFER</th>
+              <th scope="col">Montant Paye</th>
+            </tr>
+          </thead>
+          <tbody>
+              
+              {% for confirmt in confirmt %}
+            <tr>
+              <td>{% for societe in confirmt.reservation.societe.all %}
+                {{ societe.nom }}
+              {% endfor %}</td>
+              <td>{{confirmt.reservation.nom}}</td>
+              <td>{{confirmt.reservation.prenom}}</td>
+              <td>{{confirmt.reservation.date}}</td>
+              <td>{{confirmt.num_trans}}</td>
+              <td>{{confirmt.reservation.time.time|time:"H:i"}}</td>
+              <td>{{confirmt.reservation.destination}}</td>
+              <td>{{confirmt.reservation.tel}}</td>
+              <td>{{confirmt.montant_paye.prix}}</td>
+  
+              {% if request.user.is_superuser or user.is_admin or user.is_vendeur %}
+              <td>
+                
+                <a href="#" onclick="return confirm('Êtes-vous sûr de vouloir Modifier cet élément ?')" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
+              </td>
+              <td>
+                <a href="#" onclick="return confirm('Êtes-vous sûr de vouloir Supprimer cet élément ?')" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>
+              </td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+<!--
+      <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; Première</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Précédente</a>
+            {% endif %}
+      
+            <span class="current">
+                Page {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+            </span>
+      
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Suivante</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Dernière &raquo;</a>
+            {% endif %}
+        </span>
+      </div>
+-->  
+      </div>
+  </div>
+  </div>
+{% endblock  %}

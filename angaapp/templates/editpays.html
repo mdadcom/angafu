@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="col-md-12">
+    <div class="card">
+      <form method="post" action="{% url 'updatepays' pays.id %}" class="form-horizontal">
+        {% csrf_token %}
+        <div class="card-body">
+          <h4 class="card-title">Pays</h4>
+          <div class="form-group row">
+            <label for="nom" class="col-sm-3 text-end control-label col-form-label">NOM Pays</label>
+            <div class="col-sm-9">
+              <input type="text" name="nom" class="form-control" id="nom" placeholder="Nom" value="{{ pays.nom }}" required/>
+            </div>
+          </div>
+          <div class="border-top">
+            <div class="card-body">
+              <button type="Submit" class="btn btn-primary">Modifier</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+
+{% endblock %}

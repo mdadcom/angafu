@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="col-md-6">
+      <div class="card">
+        <form method="post" action="{% url 'updatere' reservation.id %}" class="form-horizontal">
+          {% csrf_token %}
+          <div class="card-body">
+            <h4 class="card-title">Reservation</h4>
+            <div class="form-group row">
+              <label
+                for="nom"
+                class="col-sm-3 text-end control-label col-form-label"
+                >Societe</label>
+              <div class="col-sm-9">
+                {% render_field form.societe class="form-control" %}
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                for="nom"
+                class="col-sm-3 text-end control-label col-form-label"
+                >NOM</label>
+              <div class="col-sm-9">
+                {% render_field form.nom class="form-control" %}
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                for="lname"
+                class="col-sm-3 text-end control-label col-form-label"
+                >PRENOM</label
+              >
+              <div class="col-sm-9">
+                {% render_field form.prenom class="form-control" %}
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                for="date"
+                class="col-sm-3 text-end control-label col-form-label"
+                >DATE DE DEPART</label
+              >
+              <div class="col-sm-9">
+                {% render_field form.date class="form-control" %}
+              </div>
+            </div>
+            <div class="form-group row">
+            <label 
+            class="col-sm-3 text-end control-label col-form-label" 
+            for="time"
+            >HEURE DE DEPART</label>
+            <div class="col-sm-9">
+                   
+              {% render_field form.time type="time" class="form-control" %}
+                      
+                  
+                </div>
+            </div> 
+            <div class="form-group row">
+              <label 
+              class="col-sm-3 text-end control-label col-form-label" 
+              for="destination"
+              >DESTINATION</label>
+              <div class="col-sm-9">
+                      
+                        {% render_field form.destination class="form-control" %}
+                         
+                      </select>
+                  </div>
+              </div> 
+            <div class="form-group row">
+              <label
+                for="tel"
+                class="col-sm-3 text-end control-label col-form-label"
+                >NUMERO TELEPHONE</label
+              >
+              <div class="col-sm-9">
+                {% render_field form.tel class="form-control" %}
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                for="num_trans"
+                class="col-sm-3 text-end control-label col-form-label"
+                >NUMERO DE TRANSFERE</label
+              >
+              <div class="col-sm-9">
+                {% render_field form.num_trans class="form-control" %}
+              </div>
+            </div>
+          <div class="border-top">
+            <div class="card-body">
+              <button type="Submit" class="btn btn-primary">
+                Modifier
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+{% endblock  %}

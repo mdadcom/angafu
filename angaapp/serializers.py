@@ -16,9 +16,9 @@ class HeurSerializer(serializers.ModelSerializer):
         model = Heure_d
         fields= '__all__'
         
-class DestinationSerializer(serializers.ModelSerializer):
+class VilleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Destination
+        model = Ville
         fields= '__all__'
         
 class SMSSerializer(serializers.ModelSerializer):

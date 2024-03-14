@@ -34,7 +34,7 @@ class RoleAssignmentForm(forms.Form):
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .models import User
-from angaapp.models import Destination
+from angaapp.models import Ville
 """
 class LoginForm(froms.Form):
     user
@@ -45,8 +45,17 @@ class RegisterUserForm(UserCreationForm):
     password1=forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2=forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     email=forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    destinations = forms.ModelMultipleChoiceField(queryset=Destination.objects.all(), widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
+    villes = forms.ModelMultipleChoiceField(queryset=Ville.objects.all(), widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
     
     class Meta:
         model= User
-        fields= ('username','email','password1','password2','destinations','is_admin','is_agent_de_liaison','is_vendeur')
+        fields= ('username','email','password1','password2','villes','is_admin','is_agent_de_liaison','is_vendeur')
+        
+        
+from django.contrib.auth.forms import UserChangeForm
+from .models import User  # Assurez-vous d'importer votre modèle d'utilisateur personnalisé ici
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta(UserChangeForm.Meta):
+        model = User
+        fields = ('username', 'email', 'password', 'villes', 'is_admin', 'is_agent_de_liaison', 'is_vendeur')

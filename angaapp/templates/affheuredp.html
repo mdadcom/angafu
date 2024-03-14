@@ -7,22 +7,28 @@
   <div class="col-md-6">
     <div class="card">
       <div class="card-body">
-        <h3>Destination</h3>
+        <h3>Pays</h3>
         <div class="table-responsive">
           <table class="table">
             <!-- Entêtes de colonnes -->
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">NOM</th>
+                <th scope="col">Nom du Pays</th>
               </tr>
             </thead>
             <!-- Corps du tableau -->
             <tbody>
-              {% for destination in destination_page %}
+              {% for pays in pays_page %}
               <tr>
                 <td>#</td>
-                <td>{{ destination.nom }}</td>
+                <td>{{ pays.nom }}</td>
+                <td>
+                  <a href="{% url 'deletepays' pays.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Supprimer cet élément ?')" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>
+                </td>
+                <td>
+                  <a href="{% url 'affeditpays' pays.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Modifier cet élément ?')" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
+                </td>              
               </tr>
               {% endfor %}
             </tbody>
@@ -30,14 +36,14 @@
         </div>
         <!-- Pagination -->
         <div class="pagination">
-          {% if destination_page.has_previous %}
-          <a href="?destination_page=1">Première</a>
-          <a href="?destination_page={{ destination_page.previous_page_number }}" class="btn btn-outline-info">Précédent</a>
+          {% if pays_page.has_previous %}
+          <a href="?pays_page=1">Première</a>
+          <a href="?pays_page={{ pays_page.previous_page_number }}" class="btn btn-outline-info">Précédent</a>
           {% endif %}
-          <span class="current">Page {{ destination_page.number }} de {{ destination_page.paginator.num_pages }}.</span>
-          {% if destination_page.has_next %}
-          <a href="?destination_page={{ destination_page.next_page_number }}" class="btn btn-outline-info">Suivant</a>
-          <a href="?destination_page={{ destination_page.paginator.num_pages }}" class="btn btn-outline-info">Dernière</a>
+          <span class="current">Page {{ pays_page.number }} de {{ pays_page.paginator.num_pages }}.</span>
+          {% if pays_page.has_next %}
+          <a href="?pays_page={{ pays_page.next_page_number }}" class="btn btn-outline-info">Suivant</a>
+          <a href="?pays_page={{ pays_page.paginator.num_pages }}" class="btn btn-outline-info">Dernière</a>
           {% endif %}
         </div>
       </div>
@@ -67,11 +73,17 @@
               {% for time in time_page %}
               <tr>
                 <td>#</td>
-                <td>{{ time.societe }}</td>
-                <td>{{ time.kartie }}</td>
-                <td>{{ time.destination }}</td>
+                <td>{{ time.societe }}-{{ time.societe.destination }}</td>
+                <td>{{ time.quartie }}</td>
+                <td>{{ time.ligne }}</td>
                 <td>{{ time.car }}</td>
-                <td>{{ time.time|time:"H:i" }}</td>
+                <td>{{ time.time.time|time:"H:i" }}</td>
+                <td>
+                  <a href="{% url 'deletedepart' time.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Supprimer cet élément ?')" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>
+                </td>
+                <td>
+                  <a href="{% url 'editedepart' time.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Modifier cet élément ?')" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
+                </td>     
               </tr>
               {% endfor %}
             </tbody>
@@ -93,5 +105,55 @@
     </div>
   </div>
 </div>
+<div class="row">
+  <!-- Première moitié du card -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h3>Ville</h3>
+        <div class="table-responsive">
+          <table class="table">
+            <!-- Entêtes de colonnes -->
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Pays</th>
+                <th scope="col">Nom de la Ville</th>
+              </tr>
+            </thead>
+            <!-- Corps du tableau -->
+            <tbody>
+              {% for ville in ville_page %}
+              <tr>
+                <td>#</td>
+                <td>{{ ville.pays }}</td>
+                <td>{{ ville.nom }}</td>
+                <td>
+                  <a href="{% url 'deleteville' ville.id %}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>
+              </td>
+              <td>
+                <a href="{% url 'affeditville' ville.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Modifier cet élément ?')" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
+              </td>    
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination -->
+        <div class="pagination">
+          {% if ville_page.has_previous %}
+          <a href="?ville_page=1">Première</a>
+          <a href="?ville_page={{ ville_page.previous_page_number }}" class="btn btn-outline-info">Précédent</a>
+          {% endif %}
+          <span class="current">Page {{ ville_page.number }} de {{ ville_page.paginator.num_pages }}.</span>
+          {% if ville_page.has_next %}
+          <a href="?ville_page={{ ville_page.next_page_number }}" class="btn btn-outline-info">Suivant</a>
+          <a href="?ville_page={{ ville_page.paginator.num_pages }}" class="btn btn-outline-info">Dernière</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 {% endblock %}

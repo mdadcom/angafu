@@ -24,6 +24,7 @@
       border: 1px solid #007bff; /* Changer le style de la bordure lorsque le bouton est sélectionné */
   }
 </style>
+
 <script>
   $(document).ready(function() {
       // Récupérer l'élément HTML du champ d'entrée pour le numéro de CNIB
@@ -61,7 +62,7 @@
 
   <h1>{{societe.nom}}</h1>
 
-    <div class="col-md-6">
+  <div class="col-md-12">
       <div class="card">
         <form method="post" id="reservationform" action="{% url 'addreserve' societe.id %}" url="{% url 'load-reserve' %}" class="form-horizontal">
           {% csrf_token %}
@@ -177,12 +178,12 @@
               <label 
               class="col-sm-3 text-end control-label col-form-label" 
               for="destination"
-              >DESTINATION</label>
+              >LIGNE</label>
               <div class="col-sm-9">
-                      <select name="destination" id="id_destination" class="form-control" required>
-                        <option >--SELECTION DESTINATION--</option>
-                        {% for destination in destinations %}
-                          <option value="{{destination.id}}">{{destination.nom }}</option>
+                      <select name="ligne" id="id_ligne" class="form-control" required>
+                        <option >--SELECTION LIGNE--</option>
+                        {% for ligne in ligne %}
+                          <option value="{{ligne.id}}">{{ligne.villedp }}-{{ligne.villearv}}</option>
                           {% endfor %}
                       </select>
                   </div>
@@ -191,14 +192,14 @@
                 <label 
                 class="col-sm-3 text-end control-label col-form-label" 
                 for="destination"
-                >KARTIER</label>
+                >QUARTIER</label>
                 <div class="col-sm-9">
-                        <select name="kartie" id="id_kartie" class="form-control" required>
-                          <option >--SELECTION KARTIER--</option>
-                          {% for kartie in kartie %}
-                            <option value="{{kartie.id}}">{{kartie.nom }}</option>
-                            {% endfor %}
-                        </select>
+                  <select name="quartie" id="id_quartie" class="form-control" required>
+                    <option value="">--SELECTION QUARTIER--</option>
+                    {% for q in quartie %}
+                        <option value="{{ q.id }}">{{ q.nom }}</option>
+                    {% endfor %}
+                </select>               
                     </div>
                 </div> 
             <div class="form-group row">
@@ -208,11 +209,11 @@
             >HEURE DE DEPART</label>
             <div class="col-sm-9">
               <select name="time" id="id_time" class="form-control" required>
-                <option >--SELECTION HEURE--</option>
-                {% for heure_depart in heures_depart_par_societe %}
-                <option value="{{ heure_depart.id }}" class="heure_depart_option" style="display: none;" data-destination="{{ heure_depart.societe.destination.id }}">{{ heure_depart.time|time:"H:i" }}</option>
+                <option>--SELECTION HEURE--</option>
+                {% for time in times %}
+                <option value="{{ time.id }}">{{ time.time }}</option>
                 {% endfor %}
-            </select>
+            </select>                                  
                 </div>
             </div> 
             <div class="form-group row">
@@ -293,49 +294,46 @@
         });
     });
     </script>
-    
-  <script>
-    document.getElementById('id_kartie').addEventListener('change', function() {
-      var kartieId = this.value;
-      var societeId = document.getElementById('id_societe').value;
-      var car = document.getElementById('id_car').value;
-      var destinationId = document.getElementById('id_destination').value; // Récupère la valeur de la destination sélectionnée
-      var heuresDepartSelect = document.getElementById('id_time');
-      heuresDepartSelect.innerHTML = '';
-  
-      fetch('/get_heures_depart/?kartie_id=' + kartieId + '&societe_id=' + societeId + '&car=' + car + '&destination_id=' + destinationId)
-          .then(response => response.json())
-          .then(data => {
-              data.forEach(heure_depart => {
-                  var option = document.createElement('option');
-                  option.value = heure_depart.id;
-                  option.textContent = heure_depart.time;
-                  heuresDepartSelect.appendChild(option);
-              });
-          });
-  });
-  
-  </script>
-  <script>
-    document.getElementById('id_destination').addEventListener('change', function() {
-      var selectedDestination = this.value;
-      var options = document.querySelectorAll('.heure_depart_option');
-  
-      // Masquer toutes les options d'heure de départ
-      options.forEach(function(option) {
-          option.style.display = 'none';
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          // Écouteurs d'événements pour les menus déroulants
+          document.getElementById("id_car").addEventListener("change", updateDepartOptions);
+          document.getElementById("id_ligne").addEventListener("change", updateDepartOptions);
+          document.getElementById("id_quartie").addEventListener("change", updateDepartOptions);
       });
   
-      // Afficher les options correspondant à la destination sélectionnée
-      if (selectedDestination) {
-          var heuresDepartOptions = document.querySelectorAll('.heure_depart_option[data-destination="' + selectedDestination + '"]');
-          heuresDepartOptions.forEach(function(option) {
-              option.style.display = '';
-          });
-      }
-  });
+      function updateDepartOptions() {
+          var car = document.getElementById("id_car").value;
+          var ligne = document.getElementById("id_ligne").value;
+          var quartie = document.getElementById("id_quartie").value;
+          var societeId = parseInt(document.getElementById("id_societe").value); // Convertir en nombre entier
   
+          fetch('/get_depart_options/?car=' + car + '&ligne=' + ligne + '&quartie=' + quartie + '&societe_id=' + societeId)
+              .then(response => response.json())
+              .then(data => {
+                  var departSelect = document.getElementById("id_time");
+                  departSelect.innerHTML = ''; // Effacer les options existantes
+  
+                  data.forEach(time => {
+                      var option = document.createElement("option");
+                      option.value = time.id; // Utiliser l'identifiant de temps (time.id) renvoyé par la requête AJAX
+                      option.textContent = formatTime(time.time); // Afficher l'heure au format "H:mm"
+                      departSelect.appendChild(option);
+                  });
+              })
+              .catch(error => console.error("Erreur lors de la mise à jour des options de départ :", error));
+      }
+  
+      function formatTime(timeString) {
+          var [hours, minutes] = timeString.split(':');
+          return hours.padStart(2, '0') + ':' + minutes.padStart(2, '0');
+      }
   </script>
+    
+  
+  
+  
   <script>
     document.getElementById('reservationform').addEventListener('submit', function(event) {
       var modePaiementInputs = document.querySelectorAll('input[name="mode_paiement"]');
@@ -362,7 +360,6 @@
   });
   
   </script>
-  
   
   
 {% endblock  %}

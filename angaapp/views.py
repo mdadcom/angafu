@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect,get_object_or_404
 #from django.contrib.auth.decorators import user_passes_test
+from django.core.paginator import Paginator
+from django.db.utils import IntegrityError
+from django.http import HttpResponseNotAllowed
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import*
@@ -38,7 +41,7 @@ def home(request):
     return render(request, 'index.html',)
 
 def home2(request, ):
-    destination=Destination.objects.filter(nom__in=['Bobo-Dioulasso', 'Ouagadougou'])
+    destination=Ville.objects.filter(nom__in=['Bobo-Dioulasso', 'Ouagadougou'])
     return render(request, 'index2.html', {'destination':destination})
 def affso(request):
     
@@ -76,12 +79,12 @@ def addso(request):
        return redirect('home')
 """
 def dest(request, destination_id):
-    destination=get_object_or_404(Destination, id=destination_id)
+    destination=get_object_or_404(Ville, id=destination_id)
     societe=destination.societe_set.all()
     #societe =get_object_or_404(Societe, id=societe_id)
     
     time=Heure_d.objects.all()
-    destination=Destination.objects.all()
+    destination=Ville.objects.all()
     context={
         
         'societe':societe,
@@ -92,27 +95,47 @@ def dest(request, destination_id):
     return render(request, 'dest.html', context)
 
 def affdestination(request):
-    destination = Destination.objects.all()
+    pays=Pays.objects.all()
+    ville = Ville.objects.all()
     societe=Societe.objects.all()
+    ligne=Ligne.objects.all()
     time=Heure_d.objects.all()
-    kartie=Kartie.objects.all()
-    return render(request, 'affdestination.html',{'destination':destination,'societe':societe, 'time':time,'kartie':kartie})
-from django.core.paginator import Paginator
+    quartie=Quartie.objects.all()
+    context={'ville':ville,
+             'pays':pays,
+             'ligne':ligne,
+             'societe':societe,
+             'time':time,
+             'quartie':quartie}
+    return render(request, 'affdestination.html',context)
 
-from django.core.paginator import Paginator
-from django.shortcuts import render
-from .models import Destination, Societe, Heure_d, Kartie
+def deletepays(request, pays_id):
+    pays=Pays.objects.get(id=pays_id)
+    pays.delete()
+    return redirect('affheuredp')
+
+def deleteville(request, ville_id):
+    ville=Ville.objects.get(id=ville_id)
+    ville.delete()
+    return redirect('affheuredp')
+
 
 def affheuredp(request):
-    destination_list = Destination.objects.all()
+    pays_list=Pays.objects.all()
+    ville_list = Ville.objects.all()
     societe_list = Societe.objects.all()
-    time_list = Heure_d.objects.all()
-    kartie_list = Kartie.objects.all()
+    time_list = Depart.objects.all()
+    karti_list = Quartie.objects.all()
+    
+    # Pagination pour les pays
+    pays_paginator = Paginator(pays_list, 10)  # 10 éléments par page
+    pays_page_number = request.GET.get('pays_page')
+    pays_page_obj = pays_paginator.get_page(pays_page_number)
 
-    # Pagination pour les destinations
-    destination_paginator = Paginator(destination_list, 10)  # 10 éléments par page
-    destination_page_number = request.GET.get('destination_page')
-    destination_page_obj = destination_paginator.get_page(destination_page_number)
+    # Pagination pour les villes
+    ville_paginator = Paginator(ville_list, 10)  # 10 éléments par page
+    ville_page_number = request.GET.get('ville_page')
+    ville_page_obj = ville_paginator.get_page(ville_page_number)
 
     # Pagination pour les heures de départ
     time_paginator = Paginator(time_list, 8)  # 10 éléments par page
@@ -120,73 +143,162 @@ def affheuredp(request):
     time_page_obj = time_paginator.get_page(time_page_number)
 
     return render(request, 'affheuredp.html', {
-        'destination_page': destination_page_obj,
+        'pays_page':pays_page_obj,
+        'ville_page': ville_page_obj,
         'time_page': time_page_obj,
         'societe_list': societe_list,
-        'kartie_list': kartie_list
+        'karti_list': karti_list
     })
 
-
-
-def adddestination(request):
+def addpays(request):
     if request.method == 'POST':
         nom=request.POST.get('nom')
-        Destination.objects.create(nom=nom)
+        Pays.objects.create(nom=nom)
     return redirect('affdestination')
-def addkartie(request):
+
+def affeditpays(request, pays_id):
+    pays = Pays.objects.get(id=pays_id)
+    
+    return render(request, 'editpays.html',{'pays':pays,})
+
+def updatepays(request, pays_id):
     if request.method == 'POST':
+        nom = request.POST.get('nom')
+        pays = Pays.objects.get(id=pays_id)
+        pays.nom = nom
+        pays.save()
+    return redirect('affheuredp')
+
+
+def addville(request):
+    if request.method == 'POST':
+        pays_pk=request.POST.get('pays')
+        pays=Pays.objects.get(pk=pays_pk)
         nom=request.POST.get('nom')
-        destination_pk=request.POST.get('destination')
-        destination=Destination.objects.get(pk=destination_pk)
-        Kartie.objects.create(nom=nom,destination=destination)
+        Ville.objects.create(pays=pays,nom=nom)
+    return redirect('affdestination')
+
+def affeditville(request, ville_id):
+    ville = Ville.objects.get(id=ville_id)
+    pays=Pays.objects.all()
+    
+    return render(request, 'editville.html',{'ville':ville,'pays':pays})
+
+def updateville(request, ville_id):
+    if request.method == 'POST':
+        pays_pk=request.POST.get('pays')
+        pays=Pays.objects.get(pk=pays_pk)
+        nom = request.POST.get('nom')
+        ville = Ville.objects.get(id=ville_id)
+        ville.pays=pays
+        ville.nom = nom
+        ville.save()
+    return redirect('affheuredp')
+
+def addkarti(request):
+    if request.method == 'POST':
+        ville_pk=request.POST.get('ville')
+        ville=Ville.objects.get(pk=ville_pk)
+        nom=request.POST.get('nom')
+        Quartie.objects.create(nom=nom,ville=ville)
     return redirect('affdestination')
 def addheure(request):
     if request.method == 'POST':
-        societe_pk=request.POST.get('societe')
-        societe=Societe.objects.get(pk=societe_pk)
-        destination_pk=request.POST.get('destination')
-        destination=Destination.objects.get(pk=destination_pk)
-        kartie_pk=request.POST.get('kartie')
-        kartie=Kartie.objects.get(pk=kartie_pk)
-        car = request.POST.get('car')
         time=request.POST.get('time')
-        Heure_d.objects.create(societe=societe, destination=destination,car=car,kartie=kartie,time=time)
+        Heure_d.objects.create(time=time)
     return redirect('affdestination')
-def get_heures_depart(request):
-    if request.method == 'GET' and 'kartie_id' in request.GET and 'societe_id' in request.GET and 'car' in request.GET and 'destination_id' in request.GET:
-        kartie_id = request.GET.get('kartie_id')
-        societe_id = request.GET.get('societe_id')
-        car = request.GET.get('car')
-        destination_id = request.GET.get('destination_id') # Récupère l'ID de la destination sélectionnée
+def addligne(request):
+    if request.method == 'POST':
+        ville_pk=request.POST.get('villedp')
+        villedp=Ville.objects.get(pk=ville_pk)
+        ville_pk=request.POST.get('villearv')
+        villearv=Ville.objects.get(pk=ville_pk)
+        Ligne.objects.create(villedp=villedp,villearv=villearv)
+    return redirect('affdestination')
+def deletedepart(request, time_id):
+    depart=Depart.objects.get(id=time_id)
+    depart.delete()
+    return redirect('affheuredp')
+
+def editedepart(request, time_id):
+    time=Heure_d.objects.all()
+    return render(request, 'editedepart.html',{'time':time})
+def addepart(request):
+    if request.method == 'POST':
+        societe_pk = request.POST.get('societe')
+        societe = Societe.objects.get(pk=societe_pk)
         
-        heures_depart = Heure_d.objects.filter(kartie_id=kartie_id, societe_id=societe_id, car=car, destination_id=destination_id).values('id', 'time')
-        return JsonResponse(list(heures_depart), safe=False)
+        ligne_pk = request.POST.get('ligne')
+        ligne = Ligne.objects.get(pk=ligne_pk)
+        
+        quartie_pk = request.POST.get('quartie')
+        quartie = Quartie.objects.get(pk=quartie_pk)
+        
+        car = request.POST.get('car')
+        
+        time_pk = request.POST.get('time')
+        time = Heure_d.objects.get(pk=time_pk) if time_pk else None
+        prix_str = request.POST.get('prix')
+        prix = int(prix_str) + 1000 
+        Depart.objects.create(societe=societe, ligne=ligne, car=car, quartie=quartie, time=time, prix=prix)
+            
+        return redirect('affdestination')
+
+
+
+
+def get_depart_options(request):
+    car = request.GET.get('car')
+    ligne = request.GET.get('ligne')
+    quartie = request.GET.get('quartie')
+    societe_id = request.GET.get('societe_id')
+
+    depart_par_societe = Depart.objects.filter(societe_id=societe_id)
+
+    if quartie:
+        depart_options = depart_par_societe.filter(car=car, ligne=ligne, quartie=quartie).values_list('time_id', flat=True)
+        
+        # Obtenir les objets Heure_d correspondant aux identifiants
+        times = Heure_d.objects.filter(id__in=depart_options)
+
+        # Créer une liste de dictionnaires avec les identifiants et les temps
+        times_data = [{'id': time.id, 'time': time.time} for time in times]
+
+        # Renvoyer les heures dans la réponse JSON
+        return JsonResponse(times_data, safe=False)
     else:
-        return JsonResponse({'error': 'Invalid request'})
+        return JsonResponse([], safe=False)
+
+
+
+
+
 def affsociete(request):
-    destination = Destination.objects.all()
+    destination = Ville.objects.all()
     return render(request, 'affsociete.html',{'destination':destination})
 def addsociete(request):
     if request.method == 'POST':
         destination_pk=request.POST.get('destination')
-        destination=Destination.objects.get(pk=destination_pk)
+        destination=Ville.objects.get(pk=destination_pk)
         nom=request.POST.get('nom')
         img=request.POST.get('img')
         Societe.objects.create(destination=destination,nom=nom,img=img)
     return redirect('affsociete')
 def reserve(request, societe_id):
     societe = get_object_or_404(Societe, id=societe_id)
-    destination = Destination.objects.all()
-    societe_destination_id = societe.destination.id
-    kartie=Kartie.objects.filter(destination_id=societe_destination_id)
-    heures_depart_par_societe = Heure_d.objects.filter(societe_id=societe_id)
-    destinations = Destination.objects.exclude(id=societe_destination_id)
+    ville = Ville.objects.all()
+    societe_ville_id = societe.ville.id
+    time=Heure_d.objects.all()
+    quartie = Quartie.objects.filter(ville_id=societe_ville_id)
+    depart_par_societe = Depart.objects.filter(societe_id=societe_id)
+    ligne = Ligne.objects.filter(villedp__id=societe_ville_id)
     context = {
         'societe': societe,
-        'heures_depart_par_societe': heures_depart_par_societe,
-        'destination':destination,
-        'destinations': destinations,
-        'kartie': kartie,
+        'depart_par_societe': depart_par_societe,
+        'ville':ville,
+        'time':time,
+        'ligne': ligne,
+        'quartie': quartie,
         
     }
     return render(request, 'reservation.html', context)
@@ -216,43 +328,98 @@ def deletere(request, reservation_id):
 def affeditre(request, reservation_id):
     
     reservation = Reservations.objects.get(id=reservation_id)
-    form = ReservationsForm(request.POST or None, instance=reservation)
+    societe_id = reservation.societe.first().id
+    societe = Societe.objects.get(id=societe_id)
+    societes=Societe.objects.all()
     
-    return render(request, 'editre.html', {'form': form, 'reservation': reservation})
+    # Récupérer les lignes associées à la ville de la société
+    ligne = Ligne.objects.filter(villedp_id=societe.ville_id)
+    
+    # Récupérer les quartiers associés à la ville de la société
+    quartie = Quartie.objects.filter(ville=societe.ville)
+    time=Heure_d.objects.all()
+    context={
+        'reservation': reservation,
+        'societes': societes,
+        'ligne':ligne,
+        'quartie':quartie,
+        'time':time}
+    
+    return render(request, 'editre.html',context)
 
 def updatere(request, reservation_id):
-    reservation= Reservations.objects.get(id=reservation_id)
-    form = ReservationsForm(request.POST, instance=reservation)
-    if form.is_valid():
-        form.save()
+    if request.method == 'POST':
+        societe_pk = request.POST.get('societe')
+        societe = Societe.objects.get(pk=societe_pk)
+        tel = request.POST.get('tel')
+        numero_cnib = request.POST.get('numero_cnib')
+        datedl_cnib = request.POST.get('datedl_cnib')
+        nom = request.POST.get('nom')
+        prenom = request.POST.get('prenom')
+        date = request.POST.get('date')
+        num_trans = request.POST.get('num_trans')
+        car = request.POST.get('car')
+        ligne_pk = request.POST.get('ligne')
+        ligne = Ligne.objects.get(pk=ligne_pk)
+        quartie_pk = request.POST.get('quartie')
+        quartie = Quartie.objects.get(pk=quartie_pk)
+        time_pk = request.POST.get('time')
+        time = Heure_d.objects.get(pk=time_pk)
+        
+        reservation = Reservations.objects.get(id=reservation_id)
+        reservation.tel = tel
+        reservation.numero_cnib = numero_cnib
+        reservation.datedl_cnib = datedl_cnib
+        reservation.nom = nom
+        reservation.prenom = prenom
+        reservation.date = date
+        reservation.num_trans = num_trans
+        reservation.car=car
+        reservation.ligne = ligne
+        reservation.quartie = quartie
+        reservation.time = time
+        
+        # Utilisez la méthode set() pour définir les valeurs du champ many-to-many societe
+        reservation.societe.set([societe])
+        
+        reservation.save()
         return redirect('affreserve')
+
 
 
 def addreserve(request, societe_id):
     societe = Societe.objects.get(id=societe_id)
-    time=Heure_d.objects.all()
-    destination=Destination.objects.all()
-    tel= request.GET.get("tel")
-    query= Reservations.objects.filter(tel=tel).first()
-    if request.method=="POST":
-        societe_nom = [x.nom for x in Societe.objects.all()]
-        societe_ids=[Societe.objects.get(id=societe_id)]
+    time = Heure_d.objects.all()
+    destination = Ville.objects.all()
+    depart = Depart.objects.all()
+    
+    if request.method == "POST":
+        # Récupérer les données du formulaire
         tel = request.POST.get('tel')
-        numero_cnib=request.POST.get('numero_cnib')
-        datedl_cnib=request.POST.get('datedl_cnib')
-        nom = request.POST.get('nom') 
+        numero_cnib = request.POST.get('numero_cnib')
+        datedl_cnib = request.POST.get('datedl_cnib')
+        nom = request.POST.get('nom')
         prenom = request.POST.get('prenom')
-        date=request.POST.get('date')
-        time_pk=request.POST.get('time')
-        time=Heure_d.objects.get(pk=time_pk)
-        num_trans=request.POST.get('num_trans')
-        destination_pk=request.POST.get('destination')
-        destination=Destination.objects.get(pk=destination_pk)
+        date = request.POST.get('date')
+        num_trans = request.POST.get('num_trans')
+        car = request.POST.get('car')
+        quartie_pk=request.POST.get('quartie')
+        quartie=Quartie.objects.get(pk=quartie_pk)
+        ligne_pk = request.POST.get('ligne')
+        ligne = Ligne.objects.get(pk=ligne_pk)
+        time_pk = request.POST.get('time')
+        time = Heure_d.objects.get(pk=time_pk)
+
+        # Créer la réservation avec les objets récupérés
+        reservation = Reservations.objects.create(
+            tel=tel, numero_cnib=numero_cnib, datedl_cnib=datedl_cnib, nom=nom, prenom=prenom, date=date,car=car,
+            num_trans=num_trans, quartie=quartie,ligne=ligne,time=time,
+        )
         
-        reservation = Reservations.objects.create( tel=tel,numero_cnib=numero_cnib,datedl_cnib=datedl_cnib,nom=nom, prenom=prenom,date=date,
-                                                        time=time, num_trans=num_trans ,destination=destination)
+        # Ajouter la relation avec la société
+        reservation.societe.add(societe)
         
-        reservation.societe.add(Societe.objects.get(id=societe_id))
+        # Enregistrer la réservation
         reservation.save()
         request.session['reservation_id'] = reservation.id
         
@@ -276,11 +443,10 @@ def addreserve(request, societe_id):
                 'date': reservation.date,
                 'time': {'time':time.time,},
                 'num_trans': reservation.num_trans,
-                'destination':{'destination': destination.nom},
+                'ligne':{'ligne': ligne},
                 
             }
         return redirect('affreserve')
-    return render(request, 'reservation.html',{'societe':societe})
 
 class SocieteListView(generics.ListAPIView):
     queryset = Societe.objects.all()
@@ -295,8 +461,8 @@ class HeurListView(generics.ListAPIView):
     serializer_class = HeurSerializer
     
 class DetinationListView(generics.ListAPIView):
-    queryset = Destination.objects.all()
-    serializer_class = DestinationSerializer
+    queryset = Ville.objects.all()
+    serializer_class = VilleSerializer
     
 def affreserve(request):
     query = request.GET.get('query') 
@@ -304,7 +470,13 @@ def affreserve(request):
         lis_reserver = Reservations.objects.filter(Q(nom__icontains=query) | Q(prenom__icontains=query) | Q(num_trans__icontains=query))
     else:
         lis_reserver = Reservations.objects.filter(val=False)
-    return render(request, 'affreserve.html', {'lis_reserver': lis_reserver, 'query': query})
+    
+    # Pagination
+    paginator = Paginator(lis_reserver, 5)  # 10 éléments par page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'affreserve.html', {'page_obj': page_obj, 'query': query})
 def affconfirme(request, reservation_id):
     reservation = get_object_or_404(Reservations, id=reservation_id)
     return render(request,'confirme.html',{'reservation': reservation})
@@ -340,7 +512,7 @@ def confirme(request, reservation_id):
 
 
 def affdest(request):
-    destination=Destination.objects.all()
+    destination=Ville.objects.all()
     context={
         'destination':destination,
     }
@@ -348,11 +520,11 @@ def affdest(request):
 
 
 def affdesti(request):
-    user_destination = request.user.destinations.first()
+    user_ville = request.user.villes.first()
 
-    if user_destination:
+    if user_ville:
         
-        destination = Destination.objects.filter(nom=user_destination.nom)
+        destination = Ville.objects.filter(nom=user_ville.nom)
         context = {
             'destination': destination,
         }
@@ -362,11 +534,11 @@ def affdesti(request):
 
 
 
-def aff_a_valid(request, destination_id):
-    destination=get_object_or_404(Destination, id=destination_id)
-    societe=destination.societe_set.all()
+def aff_a_valid(request, ville_id):
+    ville=get_object_or_404(Ville, id=ville_id)
+    societe=ville.societe_set.all()
     context={
-        'destination':destination,
+        'ville':ville,
         'societe':societe
     }
     return render(request, 'affavalid.html',context)
@@ -561,9 +733,16 @@ def rejeter(request, reservation_id):
     reservation.confirm = False
     reservation.save()
     
-    destination_id = reservation.destination.id
-    
-    return redirect('affavalid', destination_id=destination_id)
+    # Correction de l'accès à l'attribut `ville` à partir de `societe`
+    # Vérifiez d'abord si la réservation appartient à une seule société
+    if reservation.societe.count() == 1:
+        societe = reservation.societe.first()
+        ville_id = societe.ville.id
+        return redirect('affavalid', ville_id=ville_id)
+    else:
+        # Gérer le cas où la réservation est liée à plusieurs sociétés
+        # Peut-être rediriger vers une autre vue ou afficher un message d'erreur
+        return redirect('page_erreur')
 def affdes(request, societe_id):
     societe = get_object_or_404(Societe, id=societe_id)
     reservations_confirmees_non_valides = societe.reservations_set.filter(confirm=True, val=False)
@@ -789,3 +968,98 @@ class LoadreserveView(View):
         }
         
         return JsonResponse({'donneur': data})
+    
+    
+def load_societes(request):
+    ville_nom = request.GET.get('ville')
+    societes = Societe.objects.filter(ville__nom=ville_nom)
+    data = [{'id': societe.id, 'nom': societe.nom, 'ville': societe.ville.nom} for societe in societes]
+    return JsonResponse(data, safe=False)
+
+def load_quarties(request):
+    ville = request.GET.get('ville')
+
+    # Récupérer les quartiers correspondants à la ville spécifiée
+    quarties = Quartie.objects.filter(ville__nom=ville)
+
+    # Créer une liste des quartiers avec leurs ID et noms
+    quarties_list = [{'id': quartie.id, 'nom': quartie.nom} for quartie in quarties]
+
+    # Retourner les quartiers au format JSON
+    return JsonResponse(quarties_list, safe=False)
+
+def load_lignes(request):
+    ville = request.GET.get('ville', None)
+    if ville:
+        lignes = Ligne.objects.filter(villedp__nom=ville).values('id', 'villearv')
+        lignes_data = []
+        for ligne in lignes:
+            villearv_id = ligne['villearv']
+            villearv = Ville.objects.get(id=villearv_id).nom
+            lignes_data.append({'id': ligne['id'], 'villearv': villearv})
+        return JsonResponse(lignes_data, safe=False)
+    else:
+        return JsonResponse([], safe=False)
+    
+def get_lignes_and_quarties(request):
+    societe_id = request.GET.get('societe_id')
+    # Récupérer les lignes associées à la société sélectionnée
+    lignes = Ligne.objects.filter(societe_id=societe_id).values('id', 'villedp', 'villearv')
+    # Récupérer les quartiers associés à la société sélectionnée
+    quarties = Quartie.objects.filter(societe_id=societe_id).values('id', 'nom')
+    return JsonResponse({'lignes': list(lignes), 'quarties': list(quarties)})
+
+from django.http import JsonResponse
+from .models import Depart, Heure_d  # Assurez-vous d'importer correctement vos modèles
+
+def get_time(request):
+    societe_id = request.GET.get('societe_id')
+    
+    # Obtenez les lignes, quartiers et temps en fonction de l'ID de la société sélectionnée
+    depart_par_societe = Depart.objects.filter(societe_id=societe_id)
+    lignes = depart_par_societe.values_list('ligne__id', 'ligne__villedp__nom', 'ligne__villearv__nom').distinct()
+    quartiers = depart_par_societe.values_list('quartie__id', 'quartie__nom').distinct()
+    times = depart_par_societe.values_list('time__id', 'time__time').distinct()
+    
+    # Construisez les données à renvoyer au format JSON
+    data = {
+        'lignes': [{'id': ligne_id, 'villedp': villedp, 'villearv': villearv} for ligne_id, villedp, villearv in lignes],
+        'quartiers': [{'id': quartie_id, 'nom': nom} for quartie_id, nom in quartiers],
+        'times': [{'id': time_id, 'time': time} for time_id, time in times]
+    }
+    
+    return JsonResponse(data)
+
+def confirme_reservation(request, reservation_id):
+    try:
+        reservation = Reservations.objects.get(id=reservation_id)
+    except Reservations.DoesNotExist:
+        return redirect('page_erreur')  # Gérer le cas où la réservation n'existe pas
+
+    matching_depart = Depart.objects.filter(
+        societe__in=reservation.societe.all(),  # Utilisez societe__in pour filtrer par la relation many-to-many
+        ligne=reservation.ligne,
+        car=reservation.car,
+        quartie=reservation.quartie,
+        time=reservation.time,
+    ).first()
+
+    if matching_depart:
+        # Créer une instance de Confirme avec le montant approprié
+        confirme_instance = Confirme.objects.create(
+            num_trans=reservation.num_trans,
+            montant_paye=matching_depart,  # Utiliser un champ spécifique de Depart comme montant
+        )
+        # Ajouter la réservation à l'instance de Confirme
+        confirme_instance.reservation.add(reservation)
+        reservation.confirm = True
+        reservation.save()
+        return redirect('affreserve')
+    else:
+        # Gérer le cas où aucun départ correspondant n'est trouvé ou les champs ne sont pas identiques
+        return redirect('page_erreur')
+
+
+def confirmt(request):
+    confirmt=Confirme.objects.all()
+    return render(request, 'confirmt.html', {'confirmt': confirmt})

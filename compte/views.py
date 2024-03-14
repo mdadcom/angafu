@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseForbidden
 from django.contrib import messages
-from angaapp.models import Destination
+from angaapp.models import Ville
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from .form import *
@@ -44,12 +44,12 @@ def register_user(request):
             user = form.save(commit=False)
             user.save()
 
-            # Récupérer les destinations sélectionnées
-            destinations = form.cleaned_data.get('destinations')
+            # Récupérer les Villes sélectionnées
+            villes = form.cleaned_data.get('villes')
 
-            # Si des destinations ont été sélectionnées, les associer à l'utilisateur
-            if destinations:
-                user.destinations.set(destinations)
+            # Si des Villes ont été sélectionnées, les associer à l'utilisateur
+            if villes:
+                user.villes.set(villes)
 
             msg = 'Utilisateur créé avec succès'
             return redirect('connecte')
@@ -59,6 +59,9 @@ def register_user(request):
         form = RegisterUserForm()
     return render(request, 'register.html', {'form': form, 'msg': msg})
 
+def view_users(request):
+    users = User.objects.all()  # Récupérer tous les utilisateurs
+    return render(request, 'view_users.html', {'users': users})
 
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.shortcuts import get_object_or_404
@@ -74,10 +77,16 @@ class AjouterUtilisateur(CreateView):
     template_name = 'ajouter_utilisateur.html'
     fields = ['champ1', 'champ2', ...]
 
+from django.views.generic.edit import UpdateView
+from .form import CustomUserChangeForm  # Assurez-vous d'importer le formulaire personnalisé ici
+from .models import User
+
 class EditerUtilisateur(UpdateView):
     model = User
     template_name = 'editer_utilisateur.html'
-    fields = ['champ1', 'champ2', ...]
+    form_class = CustomUserChangeForm
+    success_url = '/votre/success/url'  # Remplacez cela par votre URL de redirection après l'édition réussie
+
 
 class SupprimerUtilisateur(DeleteView):
     model = User

@@ -5,37 +5,74 @@
 from django.db import models
 import datetime
 from twilio.rest import Client
-class Destination(models.Model):
+
+class Pays (models.Model):
+    nom=models.CharField(max_length=80)
+    class Meta:
+        verbose_name=("Pays")
+        verbose_name_plural=("Pays")
+    def __str__(self):
+        return self.nom
+
+class Ville(models.Model):
+    pays=models.ForeignKey(Pays, on_delete=models.CASCADE)
     nom=models.CharField(max_length=40)
     date_created= models.DateTimeField(auto_now=True)
     class Meta:
-        verbose_name = ("Destination")
-        verbose_name_plural = ("Destinations")
+        verbose_name = ("Ville")
+        verbose_name_plural = ("Villes")
     def __str__(self):
         return self.nom
+    
+class Quartie(models.Model):
+    ville=models.ForeignKey(Ville, on_delete=models.CASCADE)
+    nom=models.CharField(max_length=80, blank=True)
+    date_created=models.DateField(auto_now_add=True)
+    def __str__(self):
+        return self.nom
+
+
+    
+class Ligne(models.Model):
+    villedp=models.ForeignKey(Ville, related_name='lignes_dp', on_delete=models.CASCADE)
+    villearv=models.ForeignKey(Ville, related_name='lignes_arv', on_delete=models.CASCADE)
+    date_created=models.DateField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.villedp.nom} - {self.villearv.nom}"
+    
+    
 class Societe(models.Model):
-    destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
+    ville=models.ForeignKey(Ville, on_delete=models.CASCADE)
     nom=models.CharField(max_length=80, blank=True)
     img = models.FileField(upload_to='societe_images/')
 
     create_date=models.DateField(auto_now_add=True)
     class Meta:
-        verbose_name_plural=('Societe')
+        verbose_name=('Societe')
+        verbose_name_plural=('Societes')
     def __str__(self):
         return self.nom
     
-class Kartie(models.Model):
-    destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
-    nom=models.CharField(max_length=80, blank=True)
-    def __str__(self):
-        return self.nom
     
 class Heure_d(models.Model):
+    
+    time = models.TimeField()
+
+    def __str__(self):
+        return self.time.strftime('%H:%M:%S')  # Formatage de l'heure pour l'affichage
+
+    
+class Depart(models.Model):
     societe = models.ForeignKey(Societe, on_delete=models.CASCADE)
-    destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
-    kartie=models.ForeignKey(Kartie, on_delete=models.CASCADE)
+    ligne = models.ForeignKey(Ligne, on_delete=models.CASCADE)
+    quartie = models.ForeignKey(Quartie, on_delete=models.CASCADE)
     car = models.CharField(max_length=10, choices=[('VIP', 'VIP'), ('Standard', 'Standard')])
-    time=models.TimeField()
+    time = models.ForeignKey(Heure_d, on_delete=models.CASCADE)
+    prix = models.DecimalField(max_digits=10, decimal_places=2)  # Champ prix
+    create_date= models.DateField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.ligne}"
+    
 class Reservations(models.Model):
     MODE_PAIEMENT_CHOICES = (
         ('orange_money', 'Orange Money'),
@@ -51,7 +88,9 @@ class Reservations(models.Model):
     prenom=models.CharField(max_length=80, blank=True)
     date=models.DateField()
     time=models.ForeignKey(Heure_d, on_delete=models.CASCADE)
-    destination=models.ForeignKey(Destination, on_delete=models.CASCADE)
+    ligne=models.ForeignKey(Ligne, on_delete=models.CASCADE)
+    car = models.CharField(max_length=10, choices=[('VIP', 'VIP'), ('Standard', 'Standard')])
+    quartie=models.ForeignKey(Quartie, on_delete=models.CASCADE)
     mode_paiement = models.CharField(max_length=20, choices=MODE_PAIEMENT_CHOICES,null=True, blank=True)
     num_trans=models.CharField(max_length=80, blank=True)
     confirm = models.BooleanField(default=False)
@@ -84,7 +123,7 @@ class Confirme(models.Model):
     reservation = models.ManyToManyField(Reservations,)
     num_trans=models.CharField(max_length=80,)
     trans_id= models.CharField(max_length=150,)
-    montant_paye = models.DecimalField(max_digits=10, decimal_places=2)
+    montant_paye = models.ForeignKey(Depart, on_delete=models.CASCADE)
     date_paiement = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.num_trans

@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-md-12">
+  <div class="card">
+<form method="post" action="{% url 'addepart'%}" class="form-horizontal">
+    {% csrf_token %}
+    <div class="card-body">
+      <h4 class="card-title">Depart</h4>
+      <div class="form-group row">
+        <label class="col-sm-3 text-end control-label col-form-label">Ville</label>
+        <div class="col-sm-9">
+            <input type="checkbox" id="bobo-checkbox" name="bobo-checkbox" value="bobo" onclick="checkUncheck('bobo-checkbox', 'ouaga-checkbox')">
+            <label for="bobo-checkbox">Bobo-Dioulasso</label>
+            <input type="checkbox" id="ouaga-checkbox" name="ouaga-checkbox" value="ouaga" onclick="checkUncheck('ouaga-checkbox', 'bobo-checkbox')">
+            <label for="ouaga-checkbox">Ouagadougou</label>
+        </div>
+    </div>
+      
+      <div class="form-group row">
+        <label class="col-sm-3 text-end control-label col-form-label" for="societe">Sociéte</label>
+        <div class="col-sm-9">
+          <select id="societe-select" name="societe" class="form-control" required>
+            {% for societe in societe %}
+            <option value="{{societe.id}}">{{societe.nom }}-{{societe.ville}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 text-end control-label col-form-label" for="destination">Ligne</label>
+        <div class="col-sm-9">
+          <select name="ligne" id="ligne-select" class="form-control" required>
+            {% for ligne in ligne %}
+            <option value="{{ligne.id}}">{{ligne.villedp }}-{{ligne.villearv}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 text-end control-label col-form-label" for="destination">Quartie</label>
+        <div class="col-sm-9">
+          <select name="quartie" id="quartie-select" class="form-control" required>
+            {% for quartie in quartie %}
+            <option value="{{quartie.id}}">{{quartie.nom }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 text-end control-label col-form-label" for="car">CAR</label>
+        <div class="col-sm-9">
+          <select name="car" id="id_car" class="form-control" required>
+            <option>--SELECTION CAR--</option>
+            <option value="VIP">VIP</option>
+            <option value="Standard">Standard</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 text-end control-label col-form-label" for="destination">HEURE</label>
+        <div class="col-sm-9">
+          <select name="time" class="form-control" required>
+            {% for time in time %}
+            <option value="{{time.id}}">{{time.time|time:"H:i"}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 text-end control-label col-form-label" for="prix">Prix</label>
+        <div class="col-sm-9">
+            <input type="number" name="prix" id="prix" class="form-control" required>
+        </div>
+    </div>
+      <div class="border-top">
+        <div class="card-body">
+          <button type="Submit" class="btn btn-primary">Ajouter</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var boboCheckbox = document.getElementById("bobo-checkbox");
+        var ouagaCheckbox = document.getElementById("ouaga-checkbox");
+        var societeSelect = document.getElementById("societe-select");
+  
+        // Fonction pour charger les sociétés via une requête AJAX
+        function loadSocietes(ville) {
+            // Effectuez votre requête AJAX pour récupérer les sociétés correspondantes à la ville
+            // Assurez-vous d'ajuster l'URL et les données de la requête en fonction de votre configuration Django
+            var url = "{% url 'load_societes' %}?ville=" + ville;
+  
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // Effacez les options existantes
+                    societeSelect.innerHTML = "";
+  
+                    // Ajoutez les nouvelles options de société
+                    data.forEach(societe => {
+                        var option = document.createElement("option");
+                        option.value = societe.id;
+                        option.textContent = societe.nom + " - " + societe.ville;
+                        societeSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Erreur lors du chargement des sociétés :", error));
+        }
+  
+        // Vérifier l'état initial des cases à cocher lors du chargement de la page
+        if (boboCheckbox.checked) {
+            loadSocietes("Bobo-Dioulasso");
+        } else if (ouagaCheckbox.checked) {
+            loadSocietes("Ouagadougou");
+        } else {
+            // Effacez le contenu du select si aucun des deux n'est coché
+            societeSelect.innerHTML = "";
+        }
+  
+        // Écouteur d'événements pour les cases à cocher
+        boboCheckbox.addEventListener("change", function() {
+            if (boboCheckbox.checked) {
+                loadSocietes("Bobo-Dioulasso");
+            } else if (!ouagaCheckbox.checked) {
+                // Effacez le contenu du select si aucun des deux n'est coché
+                societeSelect.innerHTML = "";
+            }
+        });
+  
+        ouagaCheckbox.addEventListener("change", function() {
+            if (ouagaCheckbox.checked) {
+                loadSocietes("Ouagadougou");
+            } else if (!boboCheckbox.checked) {
+                // Effacez le contenu du select si aucun des deux n'est coché
+                societeSelect.innerHTML = "";
+            }
+        });
+    });
+  </script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var boboCheckbox = document.getElementById("bobo-checkbox");
+        var ouagaCheckbox = document.getElementById("ouaga-checkbox");
+        var quartieSelect = document.getElementById("quartie-select");
+  
+        // Fonction pour charger les quartiers via une requête AJAX
+        function loadQuarties(ville) {
+            // Effectuez votre requête AJAX pour récupérer les quartiers correspondants à la ville
+            // Assurez-vous d'ajuster l'URL et les données de la requête en fonction de votre configuration Django
+            var url = "{% url 'load_quarties' %}?ville=" + ville;
+  
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // Effacez les options existantes
+                    quartieSelect.innerHTML = "";
+  
+                    // Ajoutez les nouvelles options de quartier
+                    data.forEach(quartie => {
+                        var option = document.createElement("option");
+                        option.value = quartie.id;
+                        option.textContent = quartie.nom;
+                        quartieSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Erreur lors du chargement des quartiers :", error));
+        }
+  
+        // Vérifier l'état initial des cases à cocher lors du chargement de la page
+        if (boboCheckbox.checked) {
+            loadQuarties("Bobo-Dioulasso");
+        } else if (ouagaCheckbox.checked) {
+            loadQuarties("Ouagadougou");
+        } else {
+            // Effacez le contenu du select si aucun des deux n'est coché
+            quartieSelect.innerHTML = "";
+        }
+  
+        // Écouteur d'événements pour les cases à cocher
+        boboCheckbox.addEventListener("change", function() {
+            if (boboCheckbox.checked) {
+                loadQuarties("Bobo-Dioulasso");
+            } else if (!ouagaCheckbox.checked) {
+                // Effacez le contenu du select si aucun des deux n'est coché
+                quartieSelect.innerHTML = "";
+            }
+        });
+  
+        ouagaCheckbox.addEventListener("change", function() {
+            if (ouagaCheckbox.checked) {
+                loadQuarties("Ouagadougou");
+            } else if (!boboCheckbox.checked) {
+                // Effacez le contenu du select si aucun des deux n'est coché
+                quartieSelect.innerHTML = "";
+            }
+        });
+    });
+  </script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var boboCheckbox = document.getElementById("bobo-checkbox");
+      var ouagaCheckbox = document.getElementById("ouaga-checkbox");
+      var ligneSelect = document.getElementById("ligne-select");
+  
+      function loadLignes(ville) {
+        var url = "{% url 'load_lignes' %}?ville=" + ville;
+  
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            ligneSelect.innerHTML = ""; // Effacez les options existantes
+  
+            data.forEach(ligne => {
+              var option = document.createElement("option");
+              option.value = ligne.id;
+              option.textContent = ville + "-" + ligne.villearv;
+              ligneSelect.appendChild(option);
+            });
+          })
+          .catch(error => console.error("Erreur lors du chargement des lignes :", error));
+      }
+  
+      function clearLigneSelect() {
+        ligneSelect.innerHTML = ""; // Effacez le contenu du select
+      }
+  
+      boboCheckbox.addEventListener("change", function() {
+        if (boboCheckbox.checked) {
+          loadLignes("Bobo-Dioulasso");
+        } else if (!ouagaCheckbox.checked) {
+          clearLigneSelect();
+        }
+      });
+  
+      ouagaCheckbox.addEventListener("change", function() {
+        if (ouagaCheckbox.checked) {
+          loadLignes("Ouagadougou");
+        } else if (!boboCheckbox.checked) {
+          clearLigneSelect();
+        }
+      });
+  
+      // Vérifiez l'état initial des cases à cocher lors du chargement de la page
+      if (!boboCheckbox.checked && !ouagaCheckbox.checked) {
+        clearLigneSelect();
+      }
+    });
+  </script>
+  
+  
+  <script>
+    function checkUncheck(checkedId, uncheckedId) {
+        var checkedCheckbox = document.getElementById(checkedId);
+        var uncheckedCheckbox = document.getElementById(uncheckedId);
+  
+        if (checkedCheckbox.checked) {
+            uncheckedCheckbox.checked = false; // Décocher l'autre case à cocher
+        }
+    }
+  </script>
+{% endblock %}
+    
