@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="col-md-12">
+    <div class="card">
+      <form method="post" action="{% url 'addligne'%}" class="form-horizontal">
+        {% csrf_token %}
+        <div class="card-body">
+          <h4 class="card-title">Ligne</h4>
+          <div class="form-group row">
+            <label class="col-sm-3 text-end control-label col-form-label" for="quartie">Ville de Depart</label>
+            <div class="col-sm-9">
+              <select name="villedp" class="form-control" required>
+                {% for ville in ville %}
+                <option value="{{ville.id}}">{{ville.nom}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 text-end control-label col-form-label" for="ville">Ville d'arriver</label>
+            <div class="col-sm-9">
+              <select name="villearv" class="form-control" required>
+                {% for ville in ville %}
+                <option value="{{ville.id}}">{{ville.nom}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="border-top">
+            <div class="card-body">
+              <button type="Submit" class="btn btn-primary">Ajouter</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>  
+
+
+<div class="row">
+    <!-- Première moitié du card -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h3>Ligne</h3>
+          <div class="table-responsive">
+            <table class="table">
+              <!-- Entêtes de colonnes -->
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">ville de depart</th>
+                  <th scope="col">Ville d'arrive</th>
+                </tr>
+              </thead>
+              <!-- Corps du tableau -->
+              <tbody>
+                {% for ligne in ligne_page %}
+                <tr>
+                  <td>#</td>
+                  <td>{{ ligne.villedp }}</td>
+                  <td>{{ ligne.villearv }}</td>
+                  <td>
+                    <a href="{% url 'deleteligne' ligne.id %}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>
+                </td>
+                <td>
+                  <a href="{% url 'affeditligne' ligne.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Modifier cet élément ?')" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
+                </td>    
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- Pagination -->
+          <div class="pagination">
+            {% if ligne_page.has_previous %}
+            <a href="?ligne_page=1">Première</a>
+            <a href="?ligne_page={{ ligne_page.previous_page_number }}" class="btn btn-outline-info">Précédent</a>
+            {% endif %}
+            <span class="current">Page {{ ligne_page.number }} de {{ ligne_page.paginator.num_pages }}.</span>
+            {% if ligne_page.has_next %}
+            <a href="?ligne_page={{ ligne_page.next_page_number }}" class="btn btn-outline-info">Suivant</a>
+            <a href="?ligne_page={{ ligne_page.paginator.num_pages }}" class="btn btn-outline-info">Dernière</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock  %}
+    

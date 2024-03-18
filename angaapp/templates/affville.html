@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    
+<div class="col-md-12">
+    <div class="card">
+      <form method="post" action="{% url 'addville'%}" class="form-horizontal">
+        {% csrf_token %}
+        <div class="card-body">
+          <h4 class="card-title">Ville</h4>
+          <div class="form-group row">
+            <label class="col-sm-3 text-end control-label col-form-label" for="pays">Pays</label>
+            <div class="col-sm-9">
+              <select name="pays" class="form-control" required>
+                {% for pays in pays %}
+                <option value="{{pays.id}}">{{pays.nom }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="nom" class="col-sm-3 text-end control-label col-form-label">NOM de la Ville</label>
+            <div class="col-sm-9">
+              <input type="text" name="nom" class="form-control" id="nom" placeholder="Nom" required/>
+            </div>
+          </div>
+          <div class="border-top">
+            <div class="card-body">
+              <button type="Submit" class="btn btn-primary">Ajouter</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Première moitié du card -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h3>Ville</h3>
+          <div class="table-responsive">
+            <table class="table">
+              <!-- Entêtes de colonnes -->
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Pays</th>
+                  <th scope="col">Nom de la Ville</th>
+                </tr>
+              </thead>
+              <!-- Corps du tableau -->
+              <tbody>
+                {% for ville in ville_page %}
+                <tr>
+                  <td>#</td>
+                  <td>{{ ville.pays }}</td>
+                  <td>{{ ville.nom }}</td>
+                  <td>
+                    <a href="{% url 'deleteville' ville.id %}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>
+                </td>
+                <td>
+                  <a href="{% url 'affeditville' ville.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Modifier cet élément ?')" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
+                </td>    
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- Pagination -->
+          <div class="pagination">
+            {% if ville_page.has_previous %}
+            <a href="?ville_page=1">Première</a>
+            <a href="?ville_page={{ ville_page.previous_page_number }}" class="btn btn-outline-info">Précédent</a>
+            {% endif %}
+            <span class="current">Page {{ ville_page.number }} de {{ ville_page.paginator.num_pages }}.</span>
+            {% if ville_page.has_next %}
+            <a href="?ville_page={{ ville_page.next_page_number }}" class="btn btn-outline-info">Suivant</a>
+            <a href="?ville_page={{ ville_page.paginator.num_pages }}" class="btn btn-outline-info">Dernière</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    {% endblock  %}

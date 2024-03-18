@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-md-12">
+    <div class="card">
+      <form method="post" action="{% url 'addpays' %}" class="form-horizontal">
+        {% csrf_token %}
+        <div class="card-body">
+          <h4 class="card-title">Pays</h4>
+          <div class="form-group row">
+            <label for="nom" class="col-sm-3 text-end control-label col-form-label">NOM Pays</label>
+            <div class="col-sm-9">
+              <input type="text" name="nom" class="form-control" id="nom" placeholder="Nom" required/>
+            </div>
+          </div>
+          <div class="border-top">
+            <div class="card-body">
+              <button type="Submit" class="btn btn-primary">Ajouter</button>
+            </div>
+          </div>
+        </div>
+      </form>
+</div>
+</div>
+
+<div class="row">
+    <!-- Première moitié du card -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h3>Pays</h3>
+          <div class="table-responsive">
+            <table class="table">
+              <!-- Entêtes de colonnes -->
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Nom du Pays</th>
+                </tr>
+              </thead>
+              <!-- Corps du tableau -->
+              <tbody>
+                {% for pays in pays_page %}
+                <tr>
+                  <td>#</td>
+                  <td>{{ pays.nom }}</td>
+                  <td>
+                    <a href="{% url 'deletepays' pays.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Supprimer cet élément ?')" class="btn btn-outline-danger"><i class="me-2 mdi mdi-delete"></i></a>
+                  </td>
+                  <td>
+                    <a href="{% url 'affeditpays' pays.id %}" onclick="return confirm('Êtes-vous sûr de vouloir Modifier cet élément ?')" class="btn btn-outline-info"><i class="me-2 mdi mdi-grease-pencil"></i></a>
+                  </td>              
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- Pagination -->
+          <div class="pagination">
+            {% if pays_page.has_previous %}
+            <a href="?pays_page=1">Première</a>
+            <a href="?pays_page={{ pays_page.previous_page_number }}" class="btn btn-outline-info">Précédent</a>
+            {% endif %}
+            <span class="current">Page {{ pays_page.number }} de {{ pays_page.paginator.num_pages }}.</span>
+            {% if pays_page.has_next %}
+            <a href="?pays_page={{ pays_page.next_page_number }}" class="btn btn-outline-info">Suivant</a>
+            <a href="?pays_page={{ pays_page.paginator.num_pages }}" class="btn btn-outline-info">Dernière</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

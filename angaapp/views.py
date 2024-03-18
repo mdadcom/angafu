@@ -121,21 +121,10 @@ def deleteville(request, ville_id):
 
 
 def affheuredp(request):
-    pays_list=Pays.objects.all()
-    ville_list = Ville.objects.all()
+    
     societe_list = Societe.objects.all()
     time_list = Depart.objects.all()
     karti_list = Quartie.objects.all()
-    
-    # Pagination pour les pays
-    pays_paginator = Paginator(pays_list, 10)  # 10 éléments par page
-    pays_page_number = request.GET.get('pays_page')
-    pays_page_obj = pays_paginator.get_page(pays_page_number)
-
-    # Pagination pour les villes
-    ville_paginator = Paginator(ville_list, 10)  # 10 éléments par page
-    ville_page_number = request.GET.get('ville_page')
-    ville_page_obj = ville_paginator.get_page(ville_page_number)
 
     # Pagination pour les heures de départ
     time_paginator = Paginator(time_list, 8)  # 10 éléments par page
@@ -143,18 +132,24 @@ def affheuredp(request):
     time_page_obj = time_paginator.get_page(time_page_number)
 
     return render(request, 'affheuredp.html', {
-        'pays_page':pays_page_obj,
-        'ville_page': ville_page_obj,
         'time_page': time_page_obj,
         'societe_list': societe_list,
         'karti_list': karti_list
     })
+def affpays(request):
+    pays_list=Pays.objects.all()
+    
+     # Pagination pour les pays
+    pays_paginator = Paginator(pays_list, 10)  # 10 éléments par page
+    pays_page_number = request.GET.get('pays_page')
+    pays_page_obj = pays_paginator.get_page(pays_page_number)
 
+    return render(request,'affpays.html',{'pays_page':pays_page_obj})
 def addpays(request):
     if request.method == 'POST':
         nom=request.POST.get('nom')
         Pays.objects.create(nom=nom)
-    return redirect('affdestination')
+    return redirect('affpays')
 
 def affeditpays(request, pays_id):
     pays = Pays.objects.get(id=pays_id)
@@ -169,14 +164,21 @@ def updatepays(request, pays_id):
         pays.save()
     return redirect('affheuredp')
 
-
+def affville(request):
+    pays=Pays.objects.all()
+    ville_list=Ville.objects.all()
+    
+    ville_paginator = Paginator(ville_list, 10)  # 10 éléments par page
+    ville_page_number = request.GET.get('ville_page')
+    ville_page_obj = ville_paginator.get_page(ville_page_number)
+    return render(request, 'affville.html',{'ville_page': ville_page_obj,'pays':pays})
 def addville(request):
     if request.method == 'POST':
         pays_pk=request.POST.get('pays')
         pays=Pays.objects.get(pk=pays_pk)
         nom=request.POST.get('nom')
         Ville.objects.create(pays=pays,nom=nom)
-    return redirect('affdestination')
+    return redirect('affville')
 
 def affeditville(request, ville_id):
     ville = Ville.objects.get(id=ville_id)
@@ -194,19 +196,57 @@ def updateville(request, ville_id):
         ville.nom = nom
         ville.save()
     return redirect('affheuredp')
-
+def affkartie(request):
+    ville=Ville.objects.all()
+    quartie_list=Quartie.objects.all()
+    quartie_paginator = Paginator(quartie_list, 10)  # 10 éléments par page
+    quartie_page_number = request.GET.get('quartie_page')
+    quartie_page_obj = quartie_paginator.get_page(quartie_page_number)
+    return render(request, 'affkartie.html',{'quartie_page':quartie_page_obj, 'ville':ville})
 def addkarti(request):
     if request.method == 'POST':
         ville_pk=request.POST.get('ville')
         ville=Ville.objects.get(pk=ville_pk)
         nom=request.POST.get('nom')
         Quartie.objects.create(nom=nom,ville=ville)
-    return redirect('affdestination')
+    return redirect('affkartie')
+def deletequartie(request, quartie_id):
+    quartie=Quartie.objects.get(id=quartie_id)
+    quartie.delete()
+    return redirect('affkartie')
+def updatekartie(request, quartie_id):
+    if request.method == 'POST':
+        ville_pk=request.POST.get('ville')
+        ville=Ville.objects.get(pk=ville_pk)
+        nom=request.POST.get('nom')
+        quartie=Quartie.objects.get(id=quartie_id)
+        quartie.ville=ville
+        quartie.nom=nom
+        quartie.save()
+    return redirect('affkartie')
+def affeditquartie(request, quartie_id):
+    quartie=Quartie.objects.get(id=quartie_id)
+    ville=Ville.objects.all()
+    return render(request, 'affeditquartie.html',{'quartie':quartie, 'ville':ville})
 def addheure(request):
     if request.method == 'POST':
         time=request.POST.get('time')
         Heure_d.objects.create(time=time)
     return redirect('affdestination')
+def affligne(request):
+    ville=Ville.objects.all()
+    ligne_list=Ligne.objects.all()
+    ligne_paginator = Paginator(ligne_list, 10)  # 10 éléments par page
+    ligne_page_number = request.GET.get('ligne_page')
+    ligne_page_obj = ligne_paginator.get_page(ligne_page_number)
+    return render(request, 'affligne.html',{'ligne_page': ligne_page_obj,'ville':ville})
+def deleteligne(request, ligne_id):
+    ligne=Ligne.objects.get(id=ligne_id)
+    ligne.delete()
+    return redirect('affligne')
+def affeditligne(request, ligne_id):
+    ligne=Ligne.objects.get(id=ligne_id)
+    return render(request, 'affeditligne.html',)
 def addligne(request):
     if request.method == 'POST':
         ville_pk=request.POST.get('villedp')
@@ -214,7 +254,7 @@ def addligne(request):
         ville_pk=request.POST.get('villearv')
         villearv=Ville.objects.get(pk=ville_pk)
         Ligne.objects.create(villedp=villedp,villearv=villearv)
-    return redirect('affdestination')
+    return redirect('affligne')
 def deletedepart(request, time_id):
     depart=Depart.objects.get(id=time_id)
     depart.delete()
@@ -635,7 +675,7 @@ def valides(request, confirme_id):
         
         client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
         
-        message = f'Votre ticket de la compagnie {", ".join(str(res.societe.first().nom) for res in confirme.reservation.all())} est confirmé avec succès pour le trajet {", ".join(str(res.societe.first().destination.nom) for res in confirme.reservation.all())}-{", ".join(str(res.destination.nom) for res in confirme.reservation.all())} du {", ".join(res.date.strftime("%d-%m-%Y") for res in confirme.reservation.all())} à {", ".join(str(res.time.time) for res in confirme.reservation.all())}. Numéro du ticket : {numticket}, chaise : {numchaise}.'
+        message = f'Votre ticket de la compagnie {", ".join(str(res.societe.first().nom) for res in confirme.reservation.all())} est confirmé avec succès pour le trajet {", ".join(str(res.societe.first().ligne) for res in confirme.reservation.all())} du {", ".join(res.date.strftime("%d-%m-%Y") for res in confirme.reservation.all())} à {", ".join(str(res.time.time) for res in confirme.reservation.all())}. Numéro du ticket : {numticket}, chaise : {numchaise}.'
         
         
         message = client.messages.create(

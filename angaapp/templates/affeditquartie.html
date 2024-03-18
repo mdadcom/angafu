@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="col-md-12">
+    <div class="card">
+      <form method="post" action="{% url 'updatekartie' quartie.id%}" class="form-horizontal">
+        {% csrf_token %}
+        <div class="card-body">
+          <h4 class="card-title">Modifie Quartie</h4>
+          <div class="form-group row">
+            <label class="col-sm-3 text-end control-label col-form-label" for="ville">Ville</label>
+            <div class="col-sm-9">
+              <select name="ville" class="form-control" required>
+                {% for ville_option in ville %}
+                <option value="{{ ville_option.id }}" {% if ville_option.id == quartie.ville.id %}selected{% endif %}>{{ ville_option.nom }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="nom" class="col-sm-3 text-end control-label col-form-label">NOM</label>
+            <div class="col-sm-9">
+              <input type="text" name="nom" class="form-control" id="nom" placeholder="Nom" value="{{quartie.nom}}" required/>
+            </div>
+          </div>
+          <div class="border-top">
+            <div class="card-body">
+              <button type="Submit" class="btn btn-primary">Ajouter</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+{% endblock %}
+    
